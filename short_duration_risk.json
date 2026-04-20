@@ -1,5 +1,5 @@
 {
-  "build_time": "2026-04-19T19:01:03.015844",
+  "build_time": "2026-04-20T13:04:57.820160",
   "as_of": "2026-04-17T06:09:38",
   "tbill_3m": 3.6,
   "term_slope_pct": 0.1,
@@ -2930,6 +2930,168 @@
           "ytm": null
         }
       ]
+    },
+    "CGUI": {
+      "ticker": "CGUI",
+      "family": "Capital Group",
+      "category": "Ultra-Short",
+      "name": "Ultra Short Income ETF",
+      "vehicle": "ETF",
+      "share_class": null,
+      "is_bank_loan": false,
+      "inception": "2024-06-24",
+      "sector_weights": {
+        "Treasury": 0.0,
+        "Agency MBS": 0.0,
+        "Structured Credit": 1.03,
+        "Corporate IG": 99.15,
+        "Corporate HY": 0.0,
+        "Short-Term": 0.01,
+        "Muni": 0.0,
+        "Sovereign": 0.0,
+        "Cash/Other": -0.19
+      },
+      "rating_weights": {
+        "AAA": 0.0,
+        "AA": 0.0,
+        "A": 0.0,
+        "BBB": 0.0,
+        "BB": 0.0,
+        "B": 0.0,
+        "<B": 0.0,
+        "NR": 100.0
+      },
+      "maturity_weights": {
+        "0-3M": 8.32,
+        "3-12M": 13.75,
+        "1-2Y": 20.24,
+        "2-3Y": 7.33,
+        "3-5Y": 2.51,
+        "5Y+": 0.0,
+        "No Mat": 47.84
+      },
+      "holdings_top10": [
+        {
+          "cusip": "999USDZ92",
+          "isin": "",
+          "name": "US DOLLAR",
+          "weight": 2.93,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "505742AM8",
+          "isin": "US505742AM88",
+          "name": "LADDER CAP FIN LLLP/CORP COMPANY GUAR 144A 02/27 4.25",
+          "weight": 1.8799999999999997,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "2027-02-28",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "23305EFC2",
+          "isin": "US23305EFC21",
+          "name": "DBS BANK LTD",
+          "weight": 1.68,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "46647PCB0",
+          "isin": "US46647PCB04",
+          "name": "JPMORGAN CHASE + CO SR UNSECURED 04/27 VAR",
+          "weight": 1.6,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "2027-04-28",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "67616SEV1",
+          "isin": "US67616SEV16",
+          "name": "OESTERREICHISCHE",
+          "weight": 1.55,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "10112RAY0",
+          "isin": "US10112RAY09",
+          "name": "BOSTON PROPERTIES LP SR UNSECURED 10/26 2.75",
+          "weight": 1.5,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "2026-10-28",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "71654QCG5",
+          "isin": "US71654QCG55",
+          "name": "PETROLEOS MEXICANOS COMPANY GUAR 03/27 6.5",
+          "weight": 1.5,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "2027-03-28",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "09657SEV3",
+          "isin": "US09657SEV34",
+          "name": "BNG BK N V DISC COML PAPER",
+          "weight": 1.26,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "31428GEC3",
+          "isin": "US31428GEC33",
+          "name": "FEDERATION DES CAISSES",
+          "weight": 1.26,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "",
+          "duration": null,
+          "ytm": null
+        },
+        {
+          "cusip": "8010M3EK2",
+          "isin": "US8010M3EK26",
+          "name": "SANOFI",
+          "weight": 1.26,
+          "sector": "Corporate IG",
+          "rating": "NR",
+          "coupon": null,
+          "maturity": "",
+          "duration": null,
+          "ytm": null
+        }
+      ]
     }
   },
   "risk": {
@@ -3196,6 +3358,20 @@
       "concentration": 53.4,
       "concentration_value": 35.6,
       "structure": 67.5,
+      "hy": 0.0,
+      "hy_value": 0.0
+    },
+    "CGUI": {
+      "rate": 31.5,
+      "rate_value": 1.261,
+      "credit": 34.8,
+      "liquidity": 25.2,
+      "liquidity_value": 74.78,
+      "liquidity_method": "HQLA-LCR (sector-only)",
+      "non_govt_pct": 100.0,
+      "concentration": 24.6,
+      "concentration_value": 16.4,
+      "structure": 1.0,
       "hy": 0.0,
       "hy_value": 0.0
     }
@@ -4454,6 +4630,72 @@
           "carry": 0.374
         }
       }
+    },
+    "CGUI": {
+      "rate_up_100": {
+        "label": "+100bp parallel rate shock",
+        "pnl": -0.928,
+        "components": {
+          "rate": -1.261,
+          "carry": 0.333
+        }
+      },
+      "rate_up_25": {
+        "label": "+25bp Fed hike",
+        "pnl": 0.018,
+        "components": {
+          "rate": -0.315,
+          "carry": 0.333
+        }
+      },
+      "rate_down_100": {
+        "label": "-100bp rate rally",
+        "pnl": 1.594,
+        "components": {
+          "rate": 1.261,
+          "carry": 0.333
+        }
+      },
+      "ig_widen_50": {
+        "label": "+50bp IG corp widening",
+        "pnl": -0.292,
+        "components": {
+          "spread": -0.625,
+          "carry": 0.333
+        }
+      },
+      "hy_blow_300": {
+        "label": "+300bp HY blow-out",
+        "pnl": 0.333,
+        "components": {
+          "spread": -0.0,
+          "carry": 0.333
+        }
+      },
+      "struct_stress": {
+        "label": "+200bp ABS/CLO widening",
+        "pnl": 0.305,
+        "components": {
+          "spread": -0.029,
+          "carry": 0.333
+        }
+      },
+      "mm_crisis": {
+        "label": "Mar-2020 money-market freeze",
+        "pnl": 0.318,
+        "components": {
+          "illiquid": -0.016,
+          "carry": 0.333
+        }
+      },
+      "curve_steep": {
+        "label": "Bear-steepener (+50bp 10Y only)",
+        "pnl": 0.144,
+        "components": {
+          "rate": -0.189,
+          "carry": 0.333
+        }
+      }
     }
   },
   "nav_stats": {
@@ -4708,6 +4950,20 @@
       "n_days": 9696,
       "window_start": "1987-10-20",
       "window_end": "2026-04-17"
+    },
+    "CGUI": {
+      "max_drawdown_pct": -0.177,
+      "peak_date": "2026-03-10",
+      "trough_date": "2026-03-20",
+      "recovery_days": 12,
+      "recovery_date": "2026-04-01",
+      "worst_30d_pct": -0.02,
+      "worst_30d_date": "2026-03-20",
+      "ann_vol_pct": 0.798,
+      "ann_return_pct": 5.054,
+      "n_days": 454,
+      "window_start": "2024-06-27",
+      "window_end": "2026-04-20"
     }
   },
   "yield_decomp": {
@@ -4907,6 +5163,17 @@
       "expense_drag": -0.69,
       "residual": 1.291,
       "sec_yield": 4.49,
+      "term_slope_used": 0.1
+    },
+    "CGUI": {
+      "baseline": 3.6,
+      "rate_carry": 0.126,
+      "credit_carry": 0.841,
+      "structure_carry": 0.011,
+      "floater_carry": 0.0,
+      "expense_drag": -0.18,
+      "residual": -0.399,
+      "sec_yield": 4.0,
       "term_slope_used": 0.1
     }
   },
@@ -5347,6 +5614,29 @@
       "vehicle": "MF-A",
       "share_class": "A",
       "is_bank_loan": false
+    },
+    "CGUI": {
+      "ticker": "CGUI",
+      "family": "Capital Group",
+      "category": "Ultra-Short",
+      "name": "Ultra Short Income ETF",
+      "aum": 231947648,
+      "expense_ratio_pct": 0.18,
+      "sec_yield": 4.0,
+      "ytm": null,
+      "duration": 1.261,
+      "yield_per_duration": 3.17,
+      "max_drawdown_pct": -0.177,
+      "ann_vol_pct": 0.798,
+      "rate_score": 31.5,
+      "credit_score": 34.8,
+      "structure_pct": 1.0,
+      "hy_pct": 0.0,
+      "inception": "2024-06-24",
+      "net_yield": 3.82,
+      "vehicle": "ETF",
+      "share_class": null,
+      "is_bank_loan": false
     }
   },
   "factor_betas": {
@@ -5582,6 +5872,19 @@
       "r2": 0.108,
       "n_obs": 3729,
       "window_start": "2011-06-20",
+      "window_end": "2026-04-17"
+    },
+    "CGUI": {
+      "alpha_daily_bp": 1.56,
+      "alpha_annualized_pct": 3.931,
+      "beta_SHY": 0.199,
+      "beta_LQD": 0.013,
+      "beta_HYG": 0.012,
+      "beta_BKLN": -0.012,
+      "beta_FLOT": 0.002,
+      "r2": 0.235,
+      "n_obs": 452,
+      "window_start": "2024-06-28",
       "window_end": "2026-04-17"
     }
   },
@@ -5981,6 +6284,28 @@
       "shock_flot_shock_pct": -1.0,
       "shock_flot_beta": -0.045,
       "shock_composite_pnl": -0.31
+    },
+    "CGUI": {
+      "source": "factor_regression",
+      "r2": 0.235,
+      "n_obs": 452,
+      "window": "2024-06-28 \u2192 2026-04-17",
+      "shock_shy_pnl": 0.029,
+      "shock_shy_shock_pct": -1.5,
+      "shock_shy_beta": 0.199,
+      "shock_lqd_pnl": 0.263,
+      "shock_lqd_shock_pct": -5.0,
+      "shock_lqd_beta": 0.013,
+      "shock_hyg_pnl": 0.244,
+      "shock_hyg_shock_pct": -7.0,
+      "shock_hyg_beta": 0.012,
+      "shock_bkln_pnl": 0.424,
+      "shock_bkln_shock_pct": -8.0,
+      "shock_bkln_beta": -0.012,
+      "shock_flot_pnl": 0.326,
+      "shock_flot_shock_pct": -1.0,
+      "shock_flot_beta": 0.002,
+      "shock_composite_pnl": -0.026
     }
   },
   "calendar_rel": {
@@ -14838,6 +15163,162 @@
         "fund_ret_pct": 0.0,
         "sgov_ret_pct": 0.192,
         "excess_bp": -19.2
+      }
+    ],
+    "CGUI": [
+      {
+        "year": 2024,
+        "month": 7,
+        "fund_ret_pct": 0.587,
+        "sgov_ret_pct": 0.448,
+        "excess_bp": 13.9
+      },
+      {
+        "year": 2024,
+        "month": 8,
+        "fund_ret_pct": 0.646,
+        "sgov_ret_pct": 0.472,
+        "excess_bp": 17.4
+      },
+      {
+        "year": 2024,
+        "month": 9,
+        "fund_ret_pct": 0.536,
+        "sgov_ret_pct": 0.423,
+        "excess_bp": 11.4
+      },
+      {
+        "year": 2024,
+        "month": 10,
+        "fund_ret_pct": 0.345,
+        "sgov_ret_pct": 0.409,
+        "excess_bp": -6.4
+      },
+      {
+        "year": 2024,
+        "month": 11,
+        "fund_ret_pct": 0.481,
+        "sgov_ret_pct": 0.394,
+        "excess_bp": 8.7
+      },
+      {
+        "year": 2024,
+        "month": 12,
+        "fund_ret_pct": 0.366,
+        "sgov_ret_pct": 0.39,
+        "excess_bp": -2.3
+      },
+      {
+        "year": 2025,
+        "month": 1,
+        "fund_ret_pct": 0.354,
+        "sgov_ret_pct": 0.359,
+        "excess_bp": -0.5
+      },
+      {
+        "year": 2025,
+        "month": 2,
+        "fund_ret_pct": 0.589,
+        "sgov_ret_pct": 0.332,
+        "excess_bp": 25.7
+      },
+      {
+        "year": 2025,
+        "month": 3,
+        "fund_ret_pct": 0.334,
+        "sgov_ret_pct": 0.332,
+        "excess_bp": 0.2
+      },
+      {
+        "year": 2025,
+        "month": 4,
+        "fund_ret_pct": 0.357,
+        "sgov_ret_pct": 0.365,
+        "excess_bp": -0.8
+      },
+      {
+        "year": 2025,
+        "month": 5,
+        "fund_ret_pct": 0.402,
+        "sgov_ret_pct": 0.354,
+        "excess_bp": 4.8
+      },
+      {
+        "year": 2025,
+        "month": 6,
+        "fund_ret_pct": 0.516,
+        "sgov_ret_pct": 0.337,
+        "excess_bp": 17.9
+      },
+      {
+        "year": 2025,
+        "month": 7,
+        "fund_ret_pct": 0.361,
+        "sgov_ret_pct": 0.376,
+        "excess_bp": -1.5
+      },
+      {
+        "year": 2025,
+        "month": 8,
+        "fund_ret_pct": 0.511,
+        "sgov_ret_pct": 0.381,
+        "excess_bp": 13.1
+      },
+      {
+        "year": 2025,
+        "month": 9,
+        "fund_ret_pct": 0.38,
+        "sgov_ret_pct": 0.319,
+        "excess_bp": 6.1
+      },
+      {
+        "year": 2025,
+        "month": 10,
+        "fund_ret_pct": 0.305,
+        "sgov_ret_pct": 0.366,
+        "excess_bp": -6.1
+      },
+      {
+        "year": 2025,
+        "month": 11,
+        "fund_ret_pct": 0.333,
+        "sgov_ret_pct": 0.297,
+        "excess_bp": 3.6
+      },
+      {
+        "year": 2025,
+        "month": 12,
+        "fund_ret_pct": 0.431,
+        "sgov_ret_pct": 0.345,
+        "excess_bp": 8.6
+      },
+      {
+        "year": 2026,
+        "month": 1,
+        "fund_ret_pct": 0.423,
+        "sgov_ret_pct": 0.289,
+        "excess_bp": 13.4
+      },
+      {
+        "year": 2026,
+        "month": 2,
+        "fund_ret_pct": 0.276,
+        "sgov_ret_pct": 0.278,
+        "excess_bp": -0.2
+      },
+      {
+        "year": 2026,
+        "month": 3,
+        "fund_ret_pct": 0.067,
+        "sgov_ret_pct": 0.291,
+        "excess_bp": -22.4
+      },
+      {
+        "year": 2026,
+        "month": 4,
+        "fund_ret_pct": 0.277,
+        "sgov_ret_pct": 0.192,
+        "excess_bp": 8.5
       }
     ]
   },
@@ -31521,6 +32002,372 @@
         "d": "2026-03-27",
         "p": 367.943
       }
+    ],
+    "CGUI": [
+      {
+        "d": "2024-06-27",
+        "p": 100.0
+      },
+      {
+        "d": "2024-07-05",
+        "p": 100.18
+      },
+      {
+        "d": "2024-07-12",
+        "p": 100.36
+      },
+      {
+        "d": "2024-07-19",
+        "p": 100.36
+      },
+      {
+        "d": "2024-07-26",
+        "p": 100.639
+      },
+      {
+        "d": "2024-08-02",
+        "p": 100.916
+      },
+      {
+        "d": "2024-08-09",
+        "p": 100.848
+      },
+      {
+        "d": "2024-08-16",
+        "p": 101.048
+      },
+      {
+        "d": "2024-08-23",
+        "p": 101.228
+      },
+      {
+        "d": "2024-08-30",
+        "p": 101.277
+      },
+      {
+        "d": "2024-09-09",
+        "p": 101.518
+      },
+      {
+        "d": "2024-09-16",
+        "p": 101.679
+      },
+      {
+        "d": "2024-09-23",
+        "p": 101.84
+      },
+      {
+        "d": "2024-09-30",
+        "p": 101.82
+      },
+      {
+        "d": "2024-10-07",
+        "p": 101.921
+      },
+      {
+        "d": "2024-10-14",
+        "p": 101.982
+      },
+      {
+        "d": "2024-10-21",
+        "p": 102.062
+      },
+      {
+        "d": "2024-10-28",
+        "p": 102.143
+      },
+      {
+        "d": "2024-11-04",
+        "p": 102.252
+      },
+      {
+        "d": "2024-11-11",
+        "p": 102.354
+      },
+      {
+        "d": "2024-11-18",
+        "p": 102.415
+      },
+      {
+        "d": "2024-11-25",
+        "p": 102.537
+      },
+      {
+        "d": "2024-12-03",
+        "p": 102.704
+      },
+      {
+        "d": "2024-12-10",
+        "p": 102.846
+      },
+      {
+        "d": "2024-12-17",
+        "p": 102.806
+      },
+      {
+        "d": "2024-12-24",
+        "p": 102.957
+      },
+      {
+        "d": "2025-01-02",
+        "p": 103.08
+      },
+      {
+        "d": "2025-01-10",
+        "p": 102.998
+      },
+      {
+        "d": "2025-01-17",
+        "p": 103.326
+      },
+      {
+        "d": "2025-01-27",
+        "p": 103.49
+      },
+      {
+        "d": "2025-02-03",
+        "p": 103.445
+      },
+      {
+        "d": "2025-02-10",
+        "p": 103.527
+      },
+      {
+        "d": "2025-02-18",
+        "p": 103.609
+      },
+      {
+        "d": "2025-02-25",
+        "p": 103.856
+      },
+      {
+        "d": "2025-03-04",
+        "p": 103.992
+      },
+      {
+        "d": "2025-03-11",
+        "p": 104.054
+      },
+      {
+        "d": "2025-03-18",
+        "p": 104.095
+      },
+      {
+        "d": "2025-03-25",
+        "p": 104.302
+      },
+      {
+        "d": "2025-04-01",
+        "p": 104.36
+      },
+      {
+        "d": "2025-04-08",
+        "p": 104.422
+      },
+      {
+        "d": "2025-04-15",
+        "p": 104.567
+      },
+      {
+        "d": "2025-04-23",
+        "p": 104.608
+      },
+      {
+        "d": "2025-04-30",
+        "p": 104.732
+      },
+      {
+        "d": "2025-05-07",
+        "p": 104.878
+      },
+      {
+        "d": "2025-05-14",
+        "p": 104.815
+      },
+      {
+        "d": "2025-05-21",
+        "p": 104.899
+      },
+      {
+        "d": "2025-05-29",
+        "p": 105.023
+      },
+      {
+        "d": "2025-06-05",
+        "p": 105.236
+      },
+      {
+        "d": "2025-06-12",
+        "p": 105.362
+      },
+      {
+        "d": "2025-06-20",
+        "p": 105.445
+      },
+      {
+        "d": "2025-06-27",
+        "p": 105.654
+      },
+      {
+        "d": "2025-07-07",
+        "p": 105.821
+      },
+      {
+        "d": "2025-07-14",
+        "p": 105.8
+      },
+      {
+        "d": "2025-07-21",
+        "p": 105.947
+      },
+      {
+        "d": "2025-07-28",
+        "p": 105.989
+      },
+      {
+        "d": "2025-08-04",
+        "p": 106.245
+      },
+      {
+        "d": "2025-08-11",
+        "p": 106.363
+      },
+      {
+        "d": "2025-08-18",
+        "p": 106.497
+      },
+      {
+        "d": "2025-08-25",
+        "p": 106.539
+      },
+      {
+        "d": "2025-09-02",
+        "p": 106.661
+      },
+      {
+        "d": "2025-09-09",
+        "p": 106.788
+      },
+      {
+        "d": "2025-09-16",
+        "p": 106.851
+      },
+      {
+        "d": "2025-09-23",
+        "p": 106.957
+      },
+      {
+        "d": "2025-09-30",
+        "p": 107.024
+      },
+      {
+        "d": "2025-10-07",
+        "p": 107.024
+      },
+      {
+        "d": "2025-10-14",
+        "p": 107.109
+      },
+      {
+        "d": "2025-10-21",
+        "p": 107.257
+      },
+      {
+        "d": "2025-10-28",
+        "p": 107.342
+      },
+      {
+        "d": "2025-11-04",
+        "p": 107.265
+      },
+      {
+        "d": "2025-11-11",
+        "p": 107.499
+      },
+      {
+        "d": "2025-11-18",
+        "p": 107.563
+      },
+      {
+        "d": "2025-11-25",
+        "p": 107.678
+      },
+      {
+        "d": "2025-12-03",
+        "p": 107.814
+      },
+      {
+        "d": "2025-12-10",
+        "p": 107.899
+      },
+      {
+        "d": "2025-12-17",
+        "p": 107.98
+      },
+      {
+        "d": "2025-12-24",
+        "p": 108.108
+      },
+      {
+        "d": "2026-01-02",
+        "p": 108.193
+      },
+      {
+        "d": "2026-01-09",
+        "p": 108.321
+      },
+      {
+        "d": "2026-01-16",
+        "p": 108.407
+      },
+      {
+        "d": "2026-01-26",
+        "p": 108.514
+      },
+      {
+        "d": "2026-02-02",
+        "p": 108.608
+      },
+      {
+        "d": "2026-02-09",
+        "p": 108.736
+      },
+      {
+        "d": "2026-02-17",
+        "p": 108.822
+      },
+      {
+        "d": "2026-02-24",
+        "p": 108.822
+      },
+      {
+        "d": "2026-03-03",
+        "p": 108.934
+      },
+      {
+        "d": "2026-03-10",
+        "p": 109.015
+      },
+      {
+        "d": "2026-03-17",
+        "p": 108.929
+      },
+      {
+        "d": "2026-03-24",
+        "p": 108.865
+      },
+      {
+        "d": "2026-03-31",
+        "p": 109.003
+      },
+      {
+        "d": "2026-04-08",
+        "p": 109.175
+      },
+      {
+        "d": "2026-04-15",
+        "p": 109.175
+      }
     ]
   },
   "correlation": {
@@ -31542,7 +32389,8 @@
       "EMNT": 0.343,
       "FLBL": 0.458,
       "FLDAX": 0.367,
-      "FISAX": 0.105
+      "FISAX": 0.105,
+      "CGUI": 0.08
     },
     "SGOV": {
       "MINT": 0.293,
@@ -31562,7 +32410,8 @@
       "EMNT": 0.148,
       "FLBL": 0.014,
       "FLDAX": 0.054,
-      "FISAX": 0.088
+      "FISAX": 0.088,
+      "CGUI": 0.1
     },
     "SHV": {
       "MINT": 0.1,
@@ -31582,7 +32431,8 @@
       "EMNT": 0.233,
       "FLBL": -0.042,
       "FLDAX": 0.105,
-      "FISAX": 0.088
+      "FISAX": 0.088,
+      "CGUI": 0.244
     },
     "ICSH": {
       "MINT": 0.304,
@@ -31602,7 +32452,8 @@
       "EMNT": 0.26,
       "FLBL": 0.5,
       "FLDAX": 0.242,
-      "FISAX": 0.004
+      "FISAX": 0.004,
+      "CGUI": 0.29
     },
     "NEAR": {
       "MINT": 0.469,
@@ -31622,7 +32473,8 @@
       "EMNT": 0.206,
       "FLBL": 0.394,
       "FLDAX": 0.448,
-      "FISAX": 0.072
+      "FISAX": 0.072,
+      "CGUI": 0.338
     },
     "SHY": {
       "MINT": 0.185,
@@ -31642,7 +32494,8 @@
       "EMNT": 0.39,
       "FLBL": -0.037,
       "FLDAX": 0.433,
-      "FISAX": 0.29
+      "FISAX": 0.29,
+      "CGUI": 0.471
     },
     "SLQD": {
       "MINT": 0.411,
@@ -31662,7 +32515,8 @@
       "EMNT": 0.271,
       "FLBL": 0.474,
       "FLDAX": 0.465,
-      "FISAX": 0.078
+      "FISAX": 0.078,
+      "CGUI": 0.413
     },
     "IGSB": {
       "MINT": 0.416,
@@ -31682,7 +32536,8 @@
       "EMNT": 0.311,
       "FLBL": 0.464,
       "FLDAX": 0.383,
-      "FISAX": 0.088
+      "FISAX": 0.088,
+      "CGUI": 0.445
     },
     "FLOT": {
       "MINT": 0.37,
@@ -31702,7 +32557,8 @@
       "EMNT": 0.059,
       "FLBL": 0.521,
       "FLDAX": 0.122,
-      "FISAX": -0.107
+      "FISAX": -0.107,
+      "CGUI": 0.039
     },
     "ISTB": {
       "MINT": 0.317,
@@ -31722,7 +32578,8 @@
       "EMNT": 0.371,
       "FLBL": 0.238,
       "FLDAX": 0.41,
-      "FISAX": 0.188
+      "FISAX": 0.188,
+      "CGUI": 0.474
     },
     "TFLO": {
       "MINT": 0.025,
@@ -31742,7 +32599,8 @@
       "EMNT": 0.124,
       "FLBL": -0.114,
       "FLDAX": -0.019,
-      "FISAX": 0.001
+      "FISAX": 0.001,
+      "CGUI": 0.072
     },
     "SUB": {
       "MINT": 0.285,
@@ -31762,7 +32620,8 @@
       "EMNT": 0.17,
       "FLBL": 0.467,
       "FLDAX": 0.18,
-      "FISAX": -0.014
+      "FISAX": -0.014,
+      "CGUI": 0.291
     },
     "SMMU": {
       "MINT": 0.22,
@@ -31782,7 +32641,8 @@
       "EMNT": 0.179,
       "FLBL": 0.285,
       "FLDAX": 0.22,
-      "FISAX": 0.065
+      "FISAX": 0.065,
+      "CGUI": 0.28
     },
     "LDUR": {
       "MINT": 0.333,
@@ -31802,7 +32662,8 @@
       "EMNT": 0.307,
       "FLBL": 0.281,
       "FLDAX": 0.253,
-      "FISAX": 0.124
+      "FISAX": 0.124,
+      "CGUI": 0.414
     },
     "EMNT": {
       "MINT": 0.343,
@@ -31822,7 +32683,8 @@
       "EMNT": 1.0,
       "FLBL": 0.119,
       "FLDAX": 0.378,
-      "FISAX": 0.216
+      "FISAX": 0.216,
+      "CGUI": 0.231
     },
     "FLBL": {
       "MINT": 0.458,
@@ -31842,7 +32704,8 @@
       "EMNT": 0.119,
       "FLBL": 1.0,
       "FLDAX": 0.41,
-      "FISAX": 0.025
+      "FISAX": 0.025,
+      "CGUI": 0.007
     },
     "FLDAX": {
       "MINT": 0.367,
@@ -31862,7 +32725,8 @@
       "EMNT": 0.378,
       "FLBL": 0.41,
       "FLDAX": 1.0,
-      "FISAX": 0.498
+      "FISAX": 0.498,
+      "CGUI": 0.322
     },
     "FISAX": {
       "MINT": 0.105,
@@ -31882,7 +32746,29 @@
       "EMNT": 0.216,
       "FLBL": 0.025,
       "FLDAX": 0.498,
-      "FISAX": 1.0
+      "FISAX": 1.0,
+      "CGUI": 0.171
+    },
+    "CGUI": {
+      "MINT": 0.08,
+      "SGOV": 0.1,
+      "SHV": 0.244,
+      "ICSH": 0.29,
+      "NEAR": 0.338,
+      "SHY": 0.471,
+      "SLQD": 0.413,
+      "IGSB": 0.445,
+      "FLOT": 0.039,
+      "ISTB": 0.474,
+      "TFLO": 0.072,
+      "SUB": 0.291,
+      "SMMU": 0.28,
+      "LDUR": 0.414,
+      "EMNT": 0.231,
+      "FLBL": 0.007,
+      "FLDAX": 0.322,
+      "FISAX": 0.171,
+      "CGUI": 1.0
     }
   },
   "exposure_sim": {
@@ -31906,7 +32792,8 @@
         "GSHO": 0.036,
         "FLBL": 0.001,
         "FLDAX": 0.858,
-        "FISAX": 0.02
+        "FISAX": 0.02,
+        "CGUI": 0.878
       },
       "SGOV": {
         "MINT": 0.036,
@@ -31927,7 +32814,8 @@
         "GSHO": 1.0,
         "FLBL": 0.0,
         "FLDAX": 0.226,
-        "FISAX": 0.377
+        "FISAX": 0.377,
+        "CGUI": 0.0
       },
       "SHV": {
         "MINT": 0.036,
@@ -31948,7 +32836,8 @@
         "GSHO": 1.0,
         "FLBL": 0.0,
         "FLDAX": 0.226,
-        "FISAX": 0.377
+        "FISAX": 0.377,
+        "CGUI": 0.0
       },
       "ICSH": {
         "MINT": 0.577,
@@ -31969,7 +32858,8 @@
         "GSHO": 0.038,
         "FLBL": 0.048,
         "FLDAX": 0.558,
-        "FISAX": 0.074
+        "FISAX": 0.074,
+        "CGUI": 0.566
       },
       "NEAR": {
         "MINT": 0.709,
@@ -31990,7 +32880,8 @@
         "GSHO": 0.629,
         "FLBL": 0.001,
         "FLDAX": 0.784,
-        "FISAX": 0.547
+        "FISAX": 0.547,
+        "CGUI": 0.662
       },
       "SHY": {
         "MINT": 0.036,
@@ -32011,7 +32902,8 @@
         "GSHO": 1.0,
         "FLBL": 0.0,
         "FLDAX": 0.226,
-        "FISAX": 0.377
+        "FISAX": 0.377,
+        "CGUI": 0.0
       },
       "SLQD": {
         "MINT": 0.871,
@@ -32032,7 +32924,8 @@
         "GSHO": 0.005,
         "FLBL": 0.002,
         "FLDAX": 0.974,
-        "FISAX": 0.004
+        "FISAX": 0.004,
+        "CGUI": 0.998
       },
       "IGSB": {
         "MINT": 0.871,
@@ -32053,7 +32946,8 @@
         "GSHO": 0.002,
         "FLBL": 0.002,
         "FLDAX": 0.973,
-        "FISAX": 0.003
+        "FISAX": 0.003,
+        "CGUI": 0.997
       },
       "FLOT": {
         "MINT": 0.821,
@@ -32074,7 +32968,8 @@
         "GSHO": 0.01,
         "FLBL": 0.0,
         "FLDAX": 0.913,
-        "FISAX": 0.004
+        "FISAX": 0.004,
+        "CGUI": 0.935
       },
       "ISTB": {
         "MINT": 0.429,
@@ -32095,7 +32990,8 @@
         "GSHO": 0.881,
         "FLBL": 0.0,
         "FLDAX": 0.634,
-        "FISAX": 0.452
+        "FISAX": 0.452,
+        "CGUI": 0.446
       },
       "TFLO": {
         "MINT": 0.036,
@@ -32116,7 +33012,8 @@
         "GSHO": 1.0,
         "FLBL": 0.0,
         "FLDAX": 0.226,
-        "FISAX": 0.377
+        "FISAX": 0.377,
+        "CGUI": 0.0
       },
       "SUB": {
         "MINT": 0.272,
@@ -32137,7 +33034,8 @@
         "GSHO": 0.0,
         "FLBL": 0.0,
         "FLDAX": 0.314,
-        "FISAX": 0.0
+        "FISAX": 0.0,
+        "CGUI": 0.311
       },
       "SMMU": {
         "MINT": 0.001,
@@ -32158,7 +33056,8 @@
         "GSHO": 0.0,
         "FLBL": 0.0,
         "FLDAX": 0.011,
-        "FISAX": 0.082
+        "FISAX": 0.082,
+        "CGUI": 0.0
       },
       "LDUR": {
         "MINT": 0.84,
@@ -32179,7 +33078,8 @@
         "GSHO": 0.0,
         "FLBL": 0.007,
         "FLDAX": 0.704,
-        "FISAX": 0.482
+        "FISAX": 0.482,
+        "CGUI": 0.727
       },
       "EMNT": {
         "MINT": 0.752,
@@ -32200,7 +33100,8 @@
         "GSHO": 0.0,
         "FLBL": 0.033,
         "FLDAX": 0.741,
-        "FISAX": 0.301
+        "FISAX": 0.301,
+        "CGUI": 0.762
       },
       "GSHO": {
         "MINT": 0.036,
@@ -32221,7 +33122,8 @@
         "GSHO": 1.0,
         "FLBL": 0.0,
         "FLDAX": 0.226,
-        "FISAX": 0.377
+        "FISAX": 0.377,
+        "CGUI": 0.0
       },
       "FLBL": {
         "MINT": 0.001,
@@ -32242,7 +33144,8 @@
         "GSHO": 0.0,
         "FLBL": 1.0,
         "FLDAX": 0.0,
-        "FISAX": 0.004
+        "FISAX": 0.004,
+        "CGUI": 0.0
       },
       "FLDAX": {
         "MINT": 0.858,
@@ -32263,7 +33166,8 @@
         "GSHO": 0.226,
         "FLBL": 0.0,
         "FLDAX": 1.0,
-        "FISAX": 0.085
+        "FISAX": 0.085,
+        "CGUI": 0.974
       },
       "FISAX": {
         "MINT": 0.02,
@@ -32284,7 +33188,30 @@
         "GSHO": 0.377,
         "FLBL": 0.004,
         "FLDAX": 0.085,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 0.0
+      },
+      "CGUI": {
+        "MINT": 0.878,
+        "SGOV": 0.0,
+        "SHV": 0.0,
+        "ICSH": 0.566,
+        "NEAR": 0.662,
+        "SHY": 0.0,
+        "SLQD": 0.998,
+        "IGSB": 0.997,
+        "FLOT": 0.935,
+        "ISTB": 0.446,
+        "TFLO": 0.0,
+        "SUB": 0.311,
+        "SMMU": 0.0,
+        "LDUR": 0.727,
+        "EMNT": 0.762,
+        "GSHO": 0.0,
+        "FLBL": 0.0,
+        "FLDAX": 0.974,
+        "FISAX": 0.0,
+        "CGUI": 1.0
       }
     },
     "rating": {
@@ -32307,7 +33234,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "SGOV": {
         "MINT": 1.0,
@@ -32328,7 +33256,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "SHV": {
         "MINT": 1.0,
@@ -32349,7 +33278,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "ICSH": {
         "MINT": 1.0,
@@ -32370,7 +33300,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "NEAR": {
         "MINT": 1.0,
@@ -32391,7 +33322,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "SHY": {
         "MINT": 1.0,
@@ -32412,7 +33344,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "SLQD": {
         "MINT": 1.0,
@@ -32433,7 +33366,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "IGSB": {
         "MINT": 1.0,
@@ -32454,7 +33388,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "FLOT": {
         "MINT": 1.0,
@@ -32475,7 +33410,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "ISTB": {
         "MINT": 1.0,
@@ -32496,7 +33432,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "TFLO": {
         "MINT": 1.0,
@@ -32517,7 +33454,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "SUB": {
         "MINT": 1.0,
@@ -32538,7 +33476,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "SMMU": {
         "MINT": 1.0,
@@ -32559,7 +33498,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "LDUR": {
         "MINT": 1.0,
@@ -32580,7 +33520,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "EMNT": {
         "MINT": 1.0,
@@ -32601,7 +33542,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "GSHO": {
         "MINT": 1.0,
@@ -32622,7 +33564,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "FLBL": {
         "MINT": 0.082,
@@ -32643,7 +33586,8 @@
         "GSHO": 0.082,
         "FLBL": 1.0,
         "FLDAX": 0.082,
-        "FISAX": 0.082
+        "FISAX": 0.082,
+        "CGUI": 0.082
       },
       "FLDAX": {
         "MINT": 1.0,
@@ -32664,7 +33608,8 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
       },
       "FISAX": {
         "MINT": 1.0,
@@ -32685,7 +33630,30 @@
         "GSHO": 1.0,
         "FLBL": 0.082,
         "FLDAX": 1.0,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 1.0
+      },
+      "CGUI": {
+        "MINT": 1.0,
+        "SGOV": 1.0,
+        "SHV": 1.0,
+        "ICSH": 1.0,
+        "NEAR": 1.0,
+        "SHY": 1.0,
+        "SLQD": 1.0,
+        "IGSB": 1.0,
+        "FLOT": 1.0,
+        "ISTB": 1.0,
+        "TFLO": 1.0,
+        "SUB": 1.0,
+        "SMMU": 1.0,
+        "LDUR": 1.0,
+        "EMNT": 1.0,
+        "GSHO": 1.0,
+        "FLBL": 0.082,
+        "FLDAX": 1.0,
+        "FISAX": 1.0,
+        "CGUI": 1.0
       }
     },
     "maturity": {
@@ -32708,7 +33676,8 @@
         "GSHO": 0.395,
         "FLBL": 0.0,
         "FLDAX": 0.662,
-        "FISAX": 0.567
+        "FISAX": 0.567,
+        "CGUI": 0.448
       },
       "SGOV": {
         "MINT": 0.395,
@@ -32729,7 +33698,8 @@
         "GSHO": 1.0,
         "FLBL": 0.0,
         "FLDAX": 0.092,
-        "FISAX": 0.069
+        "FISAX": 0.069,
+        "CGUI": 0.151
       },
       "SHV": {
         "MINT": 0.624,
@@ -32750,7 +33720,8 @@
         "GSHO": 0.78,
         "FLBL": 0.0,
         "FLDAX": 0.204,
-        "FISAX": 0.165
+        "FISAX": 0.165,
+        "CGUI": 0.275
       },
       "ICSH": {
         "MINT": 0.864,
@@ -32771,7 +33742,8 @@
         "GSHO": 0.52,
         "FLBL": 0.0,
         "FLDAX": 0.417,
-        "FISAX": 0.224
+        "FISAX": 0.224,
+        "CGUI": 0.579
       },
       "NEAR": {
         "MINT": 0.629,
@@ -32792,7 +33764,8 @@
         "GSHO": 0.002,
         "FLBL": 0.0,
         "FLDAX": 0.93,
-        "FISAX": 0.748
+        "FISAX": 0.748,
+        "CGUI": 0.234
       },
       "SHY": {
         "MINT": 0.613,
@@ -32813,7 +33786,8 @@
         "GSHO": 0.0,
         "FLBL": 0.0,
         "FLDAX": 0.373,
-        "FISAX": 0.119
+        "FISAX": 0.119,
+        "CGUI": 0.377
       },
       "SLQD": {
         "MINT": 0.522,
@@ -32834,7 +33808,8 @@
         "GSHO": 0.08,
         "FLBL": 0.0,
         "FLDAX": 0.653,
-        "FISAX": 0.119
+        "FISAX": 0.119,
+        "CGUI": 0.314
       },
       "IGSB": {
         "MINT": 0.372,
@@ -32855,7 +33830,8 @@
         "GSHO": 0.0,
         "FLBL": 0.0,
         "FLDAX": 0.698,
-        "FISAX": 0.18
+        "FISAX": 0.18,
+        "CGUI": 0.22
       },
       "FLOT": {
         "MINT": 0.763,
@@ -32876,7 +33852,8 @@
         "GSHO": 0.107,
         "FLBL": 0.0,
         "FLDAX": 0.579,
-        "FISAX": 0.178
+        "FISAX": 0.178,
+        "CGUI": 0.441
       },
       "ISTB": {
         "MINT": 0.463,
@@ -32897,7 +33874,8 @@
         "GSHO": 0.006,
         "FLBL": 0.0,
         "FLDAX": 0.694,
-        "FISAX": 0.186
+        "FISAX": 0.186,
+        "CGUI": 0.278
       },
       "TFLO": {
         "MINT": 0.856,
@@ -32918,7 +33896,8 @@
         "GSHO": 0.105,
         "FLBL": 0.0,
         "FLDAX": 0.345,
-        "FISAX": 0.209
+        "FISAX": 0.209,
+        "CGUI": 0.458
       },
       "SUB": {
         "MINT": 0.615,
@@ -32939,7 +33918,8 @@
         "GSHO": 0.112,
         "FLBL": 0.0,
         "FLDAX": 0.739,
-        "FISAX": 0.247
+        "FISAX": 0.247,
+        "CGUI": 0.337
       },
       "SMMU": {
         "MINT": 0.584,
@@ -32960,7 +33940,8 @@
         "GSHO": 0.226,
         "FLBL": 0.0,
         "FLDAX": 0.878,
-        "FISAX": 0.96
+        "FISAX": 0.96,
+        "CGUI": 0.12
       },
       "LDUR": {
         "MINT": 0.718,
@@ -32981,7 +33962,8 @@
         "GSHO": 0.322,
         "FLBL": 0.0,
         "FLDAX": 0.855,
-        "FISAX": 0.955
+        "FISAX": 0.955,
+        "CGUI": 0.292
       },
       "EMNT": {
         "MINT": 0.707,
@@ -33002,7 +33984,8 @@
         "GSHO": 0.643,
         "FLBL": 0.0,
         "FLDAX": 0.581,
-        "FISAX": 0.557
+        "FISAX": 0.557,
+        "CGUI": 0.704
       },
       "GSHO": {
         "MINT": 0.395,
@@ -33023,7 +34006,8 @@
         "GSHO": 1.0,
         "FLBL": 0.0,
         "FLDAX": 0.092,
-        "FISAX": 0.069
+        "FISAX": 0.069,
+        "CGUI": 0.151
       },
       "FLBL": {
         "MINT": 0.0,
@@ -33044,7 +34028,8 @@
         "GSHO": 0.0,
         "FLBL": 0.0,
         "FLDAX": 0.0,
-        "FISAX": 0.0
+        "FISAX": 0.0,
+        "CGUI": 0.0
       },
       "FLDAX": {
         "MINT": 0.662,
@@ -33065,7 +34050,8 @@
         "GSHO": 0.092,
         "FLBL": 0.0,
         "FLDAX": 1.0,
-        "FISAX": 0.823
+        "FISAX": 0.823,
+        "CGUI": 0.297
       },
       "FISAX": {
         "MINT": 0.567,
@@ -33086,7 +34072,30 @@
         "GSHO": 0.069,
         "FLBL": 0.0,
         "FLDAX": 0.823,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 0.172
+      },
+      "CGUI": {
+        "MINT": 0.448,
+        "SGOV": 0.151,
+        "SHV": 0.275,
+        "ICSH": 0.579,
+        "NEAR": 0.234,
+        "SHY": 0.377,
+        "SLQD": 0.314,
+        "IGSB": 0.22,
+        "FLOT": 0.441,
+        "ISTB": 0.278,
+        "TFLO": 0.458,
+        "SUB": 0.337,
+        "SMMU": 0.12,
+        "LDUR": 0.292,
+        "EMNT": 0.704,
+        "GSHO": 0.151,
+        "FLBL": 0.0,
+        "FLDAX": 0.297,
+        "FISAX": 0.172,
+        "CGUI": 1.0
       }
     },
     "factor": {
@@ -33109,7 +34118,8 @@
         "GSHO": 0.0,
         "FLBL": 0.397,
         "FLDAX": 0.734,
-        "FISAX": 0.613
+        "FISAX": 0.613,
+        "CGUI": 0.733
       },
       "SGOV": {
         "MINT": 0.939,
@@ -33130,7 +34140,8 @@
         "GSHO": 0.0,
         "FLBL": 0.137,
         "FLDAX": 0.823,
-        "FISAX": 0.765
+        "FISAX": 0.765,
+        "CGUI": 0.857
       },
       "SHV": {
         "MINT": 0.706,
@@ -33151,7 +34162,8 @@
         "GSHO": 0.0,
         "FLBL": -0.156,
         "FLDAX": 0.984,
-        "FISAX": 0.983
+        "FISAX": 0.983,
+        "CGUI": 0.984
       },
       "ICSH": {
         "MINT": 0.889,
@@ -33172,7 +34184,8 @@
         "GSHO": 0.0,
         "FLBL": 0.333,
         "FLDAX": 0.898,
-        "FISAX": 0.778
+        "FISAX": 0.778,
+        "CGUI": 0.83
       },
       "NEAR": {
         "MINT": 0.874,
@@ -33193,7 +34206,8 @@
         "GSHO": 0.0,
         "FLBL": 0.529,
         "FLDAX": 0.649,
-        "FISAX": 0.484
+        "FISAX": 0.484,
+        "CGUI": 0.572
       },
       "SHY": {
         "MINT": 0.734,
@@ -33214,7 +34228,8 @@
         "GSHO": 0.0,
         "FLBL": -0.167,
         "FLDAX": 0.98,
-        "FISAX": 0.983
+        "FISAX": 0.983,
+        "CGUI": 0.994
       },
       "SLQD": {
         "MINT": 0.926,
@@ -33235,7 +34250,8 @@
         "GSHO": 0.0,
         "FLBL": 0.197,
         "FLDAX": 0.899,
-        "FISAX": 0.813
+        "FISAX": 0.813,
+        "CGUI": 0.881
       },
       "IGSB": {
         "MINT": 0.923,
@@ -33256,7 +34272,8 @@
         "GSHO": 0.0,
         "FLBL": 0.119,
         "FLDAX": 0.92,
-        "FISAX": 0.855
+        "FISAX": 0.855,
+        "CGUI": 0.923
       },
       "FLOT": {
         "MINT": 0.631,
@@ -33277,7 +34294,8 @@
         "GSHO": 0.0,
         "FLBL": 0.545,
         "FLDAX": -0.049,
-        "FISAX": -0.165
+        "FISAX": -0.165,
+        "CGUI": 0.01
       },
       "ISTB": {
         "MINT": 0.813,
@@ -33298,7 +34316,8 @@
         "GSHO": 0.0,
         "FLBL": -0.078,
         "FLDAX": 0.977,
-        "FISAX": 0.958
+        "FISAX": 0.958,
+        "CGUI": 0.99
       },
       "TFLO": {
         "MINT": 0.561,
@@ -33319,7 +34338,8 @@
         "GSHO": 0.0,
         "FLBL": -0.342,
         "FLDAX": 0.823,
-        "FISAX": 0.867
+        "FISAX": 0.867,
+        "CGUI": 0.856
       },
       "SUB": {
         "MINT": 0.958,
@@ -33340,7 +34360,8 @@
         "GSHO": 0.0,
         "FLBL": 0.423,
         "FLDAX": 0.811,
-        "FISAX": 0.672
+        "FISAX": 0.672,
+        "CGUI": 0.759
       },
       "SMMU": {
         "MINT": 0.879,
@@ -33361,7 +34382,8 @@
         "GSHO": 0.0,
         "FLBL": 0.196,
         "FLDAX": 0.914,
-        "FISAX": 0.823
+        "FISAX": 0.823,
+        "CGUI": 0.873
       },
       "LDUR": {
         "MINT": 0.783,
@@ -33382,7 +34404,8 @@
         "GSHO": 0.0,
         "FLBL": -0.024,
         "FLDAX": 0.989,
-        "FISAX": 0.953
+        "FISAX": 0.953,
+        "CGUI": 0.969
       },
       "EMNT": {
         "MINT": 0.778,
@@ -33403,7 +34426,8 @@
         "GSHO": 0.0,
         "FLBL": -0.085,
         "FLDAX": 0.983,
-        "FISAX": 0.965
+        "FISAX": 0.965,
+        "CGUI": 0.985
       },
       "GSHO": {
         "MINT": 0.0,
@@ -33424,7 +34448,8 @@
         "GSHO": 0.0,
         "FLBL": 0.0,
         "FLDAX": 0.0,
-        "FISAX": 0.0
+        "FISAX": 0.0,
+        "CGUI": 0.0
       },
       "FLBL": {
         "MINT": 0.397,
@@ -33445,7 +34470,8 @@
         "GSHO": 0.0,
         "FLBL": 1.0,
         "FLDAX": -0.043,
-        "FISAX": -0.291
+        "FISAX": -0.291,
+        "CGUI": -0.203
       },
       "FLDAX": {
         "MINT": 0.734,
@@ -33466,7 +34492,8 @@
         "GSHO": 0.0,
         "FLBL": -0.043,
         "FLDAX": 1.0,
-        "FISAX": 0.968
+        "FISAX": 0.968,
+        "CGUI": 0.971
       },
       "FISAX": {
         "MINT": 0.613,
@@ -33487,7 +34514,30 @@
         "GSHO": 0.0,
         "FLBL": -0.291,
         "FLDAX": 0.968,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 0.984
+      },
+      "CGUI": {
+        "MINT": 0.733,
+        "SGOV": 0.857,
+        "SHV": 0.984,
+        "ICSH": 0.83,
+        "NEAR": 0.572,
+        "SHY": 0.994,
+        "SLQD": 0.881,
+        "IGSB": 0.923,
+        "FLOT": 0.01,
+        "ISTB": 0.99,
+        "TFLO": 0.856,
+        "SUB": 0.759,
+        "SMMU": 0.873,
+        "LDUR": 0.969,
+        "EMNT": 0.985,
+        "GSHO": 0.0,
+        "FLBL": -0.203,
+        "FLDAX": 0.971,
+        "FISAX": 0.984,
+        "CGUI": 1.0
       }
     },
     "combined": {
@@ -33510,7 +34560,8 @@
         "GSHO": 0.544,
         "FLBL": 0.046,
         "FLDAX": 0.86,
-        "FISAX": 0.654
+        "FISAX": 0.654,
+        "CGUI": 0.865
       },
       "SGOV": {
         "MINT": 0.545,
@@ -33531,7 +34582,8 @@
         "GSHO": 1.0,
         "FLBL": 0.024,
         "FLDAX": 0.482,
-        "FISAX": 0.533
+        "FISAX": 0.533,
+        "CGUI": 0.413
       },
       "SHV": {
         "MINT": 0.609,
@@ -33552,7 +34604,8 @@
         "GSHO": 0.931,
         "FLBL": 0.022,
         "FLDAX": 0.551,
-        "FISAX": 0.604
+        "FISAX": 0.604,
+        "CGUI": 0.465
       },
       "ICSH": {
         "MINT": 0.874,
@@ -33573,7 +34626,8 @@
         "GSHO": 0.57,
         "FLBL": 0.071,
         "FLDAX": 0.773,
-        "FISAX": 0.62
+        "FISAX": 0.62,
+        "CGUI": 0.783
       },
       "NEAR": {
         "MINT": 0.872,
@@ -33594,7 +34648,8 @@
         "GSHO": 0.61,
         "FLBL": 0.075,
         "FLDAX": 0.876,
-        "FISAX": 0.825
+        "FISAX": 0.825,
+        "CGUI": 0.748
       },
       "SHY": {
         "MINT": 0.543,
@@ -33615,7 +34670,8 @@
         "GSHO": 0.618,
         "FLBL": -0.017,
         "FLDAX": 0.671,
-        "FISAX": 0.595
+        "FISAX": 0.595,
+        "CGUI": 0.472
       },
       "SLQD": {
         "MINT": 0.839,
@@ -33636,7 +34692,8 @@
         "GSHO": 0.382,
         "FLBL": 0.06,
         "FLDAX": 0.939,
-        "FISAX": 0.52
+        "FISAX": 0.52,
+        "CGUI": 0.873
       },
       "IGSB": {
         "MINT": 0.798,
@@ -33657,7 +34714,8 @@
         "GSHO": 0.354,
         "FLBL": 0.049,
         "FLDAX": 0.94,
-        "FISAX": 0.529
+        "FISAX": 0.529,
+        "CGUI": 0.838
       },
       "FLOT": {
         "MINT": 0.764,
@@ -33678,7 +34736,8 @@
         "GSHO": 0.364,
         "FLBL": 0.163,
         "FLDAX": 0.67,
-        "FISAX": 0.419
+        "FISAX": 0.419,
+        "CGUI": 0.714
       },
       "ISTB": {
         "MINT": 0.669,
@@ -33699,7 +34758,8 @@
         "GSHO": 0.563,
         "FLBL": 0.006,
         "FLDAX": 0.849,
-        "FISAX": 0.658
+        "FISAX": 0.658,
+        "CGUI": 0.634
       },
       "TFLO": {
         "MINT": 0.644,
@@ -33720,7 +34780,8 @@
         "GSHO": 0.764,
         "FLBL": 0.023,
         "FLDAX": 0.56,
-        "FISAX": 0.611
+        "FISAX": 0.611,
+        "CGUI": 0.492
       },
       "SUB": {
         "MINT": 0.726,
@@ -33741,7 +34802,8 @@
         "GSHO": 0.431,
         "FLBL": 0.076,
         "FLDAX": 0.731,
-        "FISAX": 0.564
+        "FISAX": 0.564,
+        "CGUI": 0.646
       },
       "SMMU": {
         "MINT": 0.614,
@@ -33762,7 +34824,8 @@
         "GSHO": 0.434,
         "FLBL": 0.042,
         "FLDAX": 0.619,
-        "FISAX": 0.695
+        "FISAX": 0.695,
+        "CGUI": 0.471
       },
       "LDUR": {
         "MINT": 0.829,
@@ -33783,7 +34846,8 @@
         "GSHO": 0.467,
         "FLBL": 0.025,
         "FLDAX": 0.897,
-        "FISAX": 0.828
+        "FISAX": 0.828,
+        "CGUI": 0.737
       },
       "EMNT": {
         "MINT": 0.898,
@@ -33804,7 +34868,8 @@
         "GSHO": 0.596,
         "FLBL": 0.038,
         "FLDAX": 0.848,
-        "FISAX": 0.75
+        "FISAX": 0.75,
+        "CGUI": 0.861
       },
       "GSHO": {
         "MINT": 0.544,
@@ -33825,7 +34890,8 @@
         "GSHO": 1.0,
         "FLBL": 0.023,
         "FLDAX": 0.476,
-        "FISAX": 0.53
+        "FISAX": 0.53,
+        "CGUI": 0.41
       },
       "FLBL": {
         "MINT": 0.046,
@@ -33846,7 +34912,8 @@
         "GSHO": 0.023,
         "FLBL": 1.0,
         "FLDAX": 0.02,
-        "FISAX": 0.006
+        "FISAX": 0.006,
+        "CGUI": 0.015
       },
       "FLDAX": {
         "MINT": 0.86,
@@ -33867,7 +34934,8 @@
         "GSHO": 0.476,
         "FLBL": 0.02,
         "FLDAX": 1.0,
-        "FISAX": 0.681
+        "FISAX": 0.681,
+        "CGUI": 0.872
       },
       "FISAX": {
         "MINT": 0.654,
@@ -33888,7 +34956,30 @@
         "GSHO": 0.53,
         "FLBL": 0.006,
         "FLDAX": 0.681,
-        "FISAX": 1.0
+        "FISAX": 1.0,
+        "CGUI": 0.509
+      },
+      "CGUI": {
+        "MINT": 0.865,
+        "SGOV": 0.413,
+        "SHV": 0.465,
+        "ICSH": 0.783,
+        "NEAR": 0.748,
+        "SHY": 0.472,
+        "SLQD": 0.873,
+        "IGSB": 0.838,
+        "FLOT": 0.714,
+        "ISTB": 0.634,
+        "TFLO": 0.492,
+        "SUB": 0.646,
+        "SMMU": 0.471,
+        "LDUR": 0.737,
+        "EMNT": 0.861,
+        "GSHO": 0.41,
+        "FLBL": 0.015,
+        "FLDAX": 0.872,
+        "FISAX": 0.509,
+        "CGUI": 1.0
       }
     }
   },
