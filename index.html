@@ -385,7 +385,7 @@ body{background:var(--bg-1);color:var(--text-0);font-family:var(--sans);font-siz
   <section class="section" id="sec-yield">
     <div class="panel">
       <div class="panel-header">
-        <span class="panel-title">SEC-yield attribution — T-bill + rate carry + credit + structure + floater − ER + residual</span>
+        <span class="panel-title">Excess yield over 3M T-bill — where each fund earns its spread</span>
         <span class="panel-sub" id="decomp-inputs">–</span>
       </div>
       <div class="panel-body"><div class="chart-wrap" style="height:540px"><canvas id="chart-decomp"></canvas></div></div>
@@ -909,12 +909,14 @@ function renderYieldDecomp(data, tickers) {
   const sorted = [...tickers].filter(tk => data.yield_decomp[tk] && data.yield_decomp[tk].sec_yield > 0).sort((a,b) => data.yield_decomp[b].sec_yield - data.yield_decomp[a].sec_yield);
   $('#decomp-inputs').textContent = `Term slope ${data.term_slope_pct?.toFixed(2)}%/yr · IG OAS ${data.oas?.ig}% · HY OAS ${data.oas?.hy}% · ER subtracted`;
   if (window._decompChart) window._decompChart.destroy();
+  // v4.2: Excess-over-T-bill view as default. Baseline (which grew from ~0% in
+  // 2021 to ~5% in 2023-24) is common to all funds and visually dominates —
+  // hide it so the stack above baseline is legible.
   window._decompChart = new Chart($('#chart-decomp').getContext('2d'), {
     type: 'bar',
     data: {
       labels: sorted,
       datasets: [
-        {label:'T-bill baseline', data: sorted.map(tk => data.yield_decomp[tk].baseline), backgroundColor:'#005f9e', stack:'y'},
         {label:'Rate carry', data: sorted.map(tk => data.yield_decomp[tk].rate_carry), backgroundColor:'#00aea9', stack:'y'},
         {label:'Credit spread', data: sorted.map(tk => data.yield_decomp[tk].credit_carry), backgroundColor:'#e2a252', stack:'y'},
         {label:'Structure spread', data: sorted.map(tk => data.yield_decomp[tk].structure_carry), backgroundColor:'#6b5fac', stack:'y'},
@@ -934,10 +936,10 @@ function renderYieldDecomp(data, tickers) {
           showDecompHistoryModal(data, tk);
         }
       },
-      plugins: { legend: {position:'bottom', labels:{font:{family:'JetBrains Mono',size:10},color:'#596577',boxWidth:12}}, tooltip:{ callbacks:{ footer: items => { const tk = items[0].label; const hasHist = data.yield_decomp_history && data.yield_decomp_history[tk] ? `  (click for ${data.yield_decomp_history[tk].length}-mo history)` : ''; return `SEC yield actual: ${data.yield_decomp[tk].sec_yield}% · ER: ${data.meta[tk].expense_ratio_pct || 0}%${hasHist}`; }}}},
+      plugins: { legend: {position:'bottom', labels:{font:{family:'JetBrains Mono',size:10},color:'#596577',boxWidth:12}}, tooltip:{ callbacks:{ footer: items => { const tk = items[0].label; const yd = data.yield_decomp[tk]; const excess = (yd.sec_yield - yd.baseline).toFixed(2); const hasHist = data.yield_decomp_history && data.yield_decomp_history[tk] ? `  (click for ${data.yield_decomp_history[tk].length}-mo history)` : ''; return `SEC yield ${yd.sec_yield}% − T-bill ${yd.baseline}% = ${excess}% excess · ER ${data.meta[tk].expense_ratio_pct || 0}%${hasHist}`; }}}},
       scales: {
         x: { stacked:true, grid:{display:false}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577'}},
-        y: { stacked:true, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback: v => v.toFixed(1) + '%'}, title:{display:true,text:'SEC yield attribution (%)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
+        y: { stacked:true, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback: v => v.toFixed(1) + '%'}, title:{display:true,text:'Excess yield over 3M T-bill (%)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
       }
     }
   });
@@ -1426,8 +1428,9 @@ function showDecompHistoryModal(data, tk) {
         </div>
         <div class="chart-wrap" style="height:460px"><canvas id="modal-decomp-chart"></canvas></div>
         <div style="margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--text-2)">
-          <b>Reading:</b> Stacked area = estimated SEC yield composition at each date. Dots = actual SEC yield (where available).
-          Gap between dots and stack top = unexplained residual (sec-lending, model mis-spec, tax equivalence).
+          <b>Reading:</b> Stacked area = excess over T-bill broken down by driver (rate carry + credit + structure + floater − ER).
+          Raspberry line = actual realized excess (SEC yield − 3M T-bill). Gap between line and stack top = unexplained residual.
+          T-bill baseline itself (the huge 0→5% rise since 2021) is hidden because it's common to every fund and dominates the view.
         </div>
       </div>
     </div>
@@ -1437,19 +1440,19 @@ function showDecompHistoryModal(data, tk) {
   backdrop.addEventListener('click', (e) => { if (e.target === backdrop) backdrop.remove(); });
   // Draw stacked-area chart
   const labels = series.map(r => r.date);
-  const secYields = series.map(r => r.sec_yield ?? null);
+  // v4.2: excess over baseline as the default view
+  const excessYields = series.map(r => r.sec_yield != null ? +(r.sec_yield - r.baseline).toFixed(3) : null);
   new Chart(backdrop.querySelector('#modal-decomp-chart').getContext('2d'), {
     type: 'line',
     data: {
       labels,
       datasets: [
-        {label:'T-bill baseline', data: series.map(r => r.baseline), backgroundColor:'#005f9e', borderColor:'#005f9e', borderWidth:0, pointRadius:0, fill:'origin', stack:'y', tension:0},
-        {label:'Rate carry',      data: series.map(r => r.rate_carry), backgroundColor:'#00aea9', borderColor:'#00aea9', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
+        {label:'Rate carry',      data: series.map(r => r.rate_carry), backgroundColor:'#00aea9', borderColor:'#00aea9', borderWidth:0, pointRadius:0, fill:'origin', stack:'y', tension:0},
         {label:'Credit spread',   data: series.map(r => r.credit_carry), backgroundColor:'#e2a252', borderColor:'#e2a252', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
         {label:'Structure spread',data: series.map(r => r.structure_carry), backgroundColor:'#6b5fac', borderColor:'#6b5fac', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
         {label:'Floater/MM',      data: series.map(r => r.floater_carry), backgroundColor:'#008eaa', borderColor:'#008eaa', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
         {label:'Expense drag',    data: series.map(r => r.expense_drag || 0), backgroundColor:'#8896a7', borderColor:'#8896a7', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
-        {label:'Actual SEC yield', data: secYields, borderColor:'#b42573', borderWidth:2.5, pointRadius:3, pointBackgroundColor:'#b42573', fill:false, type:'line', tension:0, spanGaps:false},
+        {label:'Actual excess (SEC − T-bill)', data: excessYields, borderColor:'#b42573', borderWidth:2.5, pointRadius:3, pointBackgroundColor:'#b42573', fill:false, type:'line', tension:0, spanGaps:false},
       ],
     },
     options: {
@@ -1460,7 +1463,7 @@ function showDecompHistoryModal(data, tk) {
       },
       scales:{
         x:{grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',maxTicksLimit:10}},
-        y:{stacked:true, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback:v=>v.toFixed(1)+'%'}, title:{display:true,text:'Yield attribution (%)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
+        y:{stacked:true, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback:v=>v.toFixed(1)+'%'}, title:{display:true,text:'Excess yield over 3M T-bill (%)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
       }
     }
   });
