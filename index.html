@@ -1432,13 +1432,11 @@ function showDecompHistoryModal(data, tk) {
           Raspberry line = actual realized excess (SEC yield − 3M T-bill). Gap between line and stack top = unexplained residual.
           T-bill baseline itself (the huge 0→5% rise since 2021) is hidden because it's common to every fund and dominates the view.
         </div>
-        <div class="callout warn" style="margin-top:10px">
-          <b>⚠ Model limits verified by adversarial audit:</b>
-          (1) FRED is blocked on the build machine, so <b>historical IG/HY OAS is a constant</b> (IG 1.20%, HY 4.50% long-run averages). The 2022-2023 spread widening cycle <b>is not visible</b> in the colored stack.
-          (2) Historical rate carry uses <b>constant 0.30%/yr curve slope</b>; 2023's inverted curve is not reflected (SHY's true rate carry flipped negative for ~12 months — chart doesn't show that).
-          (3) "Rate carry" is technically <b>rolldown</b>, not coupon+financing carry; coupon income lands in residual.
-          (4) For floater funds (FLOT, TFLO) the true baseline should be SOFR, not T-bill — so their residual inflates by ~60-70bp from SOFR-vs-Tbill drift.
-          Treat this modal as directional only. Forensic spread/rate attribution requires live FRED.
+        <div class="callout" style="margin-top:10px">
+          <b>FRED now live.</b> IG OAS, HY OAS, and 2Y–3M Treasury slope pulled from the FRED API (daily since 1990).
+          Historical spread widening (2022–23) and curve inversion (2023 negative carry) both reflected in the colored stack.
+          Two remaining caveats: (1) "Rate carry" is technically rolldown — coupon income still lands in residual; (2) for
+          floater funds (FLOT, TFLO) the appropriate baseline is SOFR, not T-bill, so their residual inflates by ~50bp.
         </div>
       </div>
     </div>
