@@ -128,6 +128,13 @@ body{background:var(--bg-1);color:var(--text-0);font-family:var(--sans);font-siz
 .exposure-matrix td{padding:3px;text-align:center;border-radius:2px;min-width:26px}
 .exposure-matrix td.tk-label{padding:3px 6px;font-weight:600;color:var(--accent);text-align:right}
 .exposure-matrix td.self{background:var(--bg-2);color:var(--text-2)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,41,75,0.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-card{background:var(--bg-0);border-radius:6px;max-width:1100px;width:100%;max-height:88vh;overflow:auto;border-top:3px solid var(--raspberry);box-shadow:0 8px 32px rgba(0,41,75,.4)}
+.modal-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:var(--mono);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy)}
+.modal-close{background:transparent;border:1px solid var(--border-bright);color:var(--text-1);padding:4px 10px;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:11px}
+.modal-close:hover{border-color:var(--red);color:var(--red)}
+.modal-body{padding:16px 20px}
 @media(max-width:1200px){.summary-row{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:800px){.summary-row{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
 </style>
@@ -382,6 +389,7 @@ body{background:var(--bg-1);color:var(--text-0);font-family:var(--sans);font-siz
         <span class="panel-sub" id="decomp-inputs">–</span>
       </div>
       <div class="panel-body"><div class="chart-wrap" style="height:540px"><canvas id="chart-decomp"></canvas></div></div>
+      <div class="callout" style="border-left-color:var(--accent2)"><b>Tip:</b> <b>click any fund's bar</b> to see how its decomposition evolved over time (monthly since 2021).</div>
       <div class="callout">
         <b>Residual ≠ manager alpha.</b> It is SEC yield minus (baseline + rate carry + credit + structure + floater − ER).
         Positive residual can be sec-lending income, tight-spread edge, or security selection — <b>or</b> OAS assumptions
@@ -900,7 +908,8 @@ function renderRiskRet(data, tickers) {
 function renderYieldDecomp(data, tickers) {
   const sorted = [...tickers].filter(tk => data.yield_decomp[tk] && data.yield_decomp[tk].sec_yield > 0).sort((a,b) => data.yield_decomp[b].sec_yield - data.yield_decomp[a].sec_yield);
   $('#decomp-inputs').textContent = `Term slope ${data.term_slope_pct?.toFixed(2)}%/yr · IG OAS ${data.oas?.ig}% · HY OAS ${data.oas?.hy}% · ER subtracted`;
-  new Chart($('#chart-decomp').getContext('2d'), {
+  if (window._decompChart) window._decompChart.destroy();
+  window._decompChart = new Chart($('#chart-decomp').getContext('2d'), {
     type: 'bar',
     data: {
       labels: sorted,
@@ -917,7 +926,15 @@ function renderYieldDecomp(data, tickers) {
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: {mode:'index', intersect:false},
-      plugins: { legend: {position:'bottom', labels:{font:{family:'JetBrains Mono',size:10},color:'#596577',boxWidth:12}}, tooltip:{ callbacks:{ footer: items => { const tk = items[0].label; return `SEC yield actual: ${data.yield_decomp[tk].sec_yield}% · ER: ${data.meta[tk].expense_ratio_pct || 0}%`; }}}},
+      onClick: (evt, elements) => {
+        const els = window._decompChart.getElementsAtEventForMode(evt, 'nearest', {intersect: true}, false);
+        if (els.length) {
+          const idx = els[0].index;
+          const tk = sorted[idx];
+          showDecompHistoryModal(data, tk);
+        }
+      },
+      plugins: { legend: {position:'bottom', labels:{font:{family:'JetBrains Mono',size:10},color:'#596577',boxWidth:12}}, tooltip:{ callbacks:{ footer: items => { const tk = items[0].label; const hasHist = data.yield_decomp_history && data.yield_decomp_history[tk] ? `  (click for ${data.yield_decomp_history[tk].length}-mo history)` : ''; return `SEC yield actual: ${data.yield_decomp[tk].sec_yield}% · ER: ${data.meta[tk].expense_ratio_pct || 0}%${hasHist}`; }}}},
       scales: {
         x: { stacked:true, grid:{display:false}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577'}},
         y: { stacked:true, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback: v => v.toFixed(1) + '%'}, title:{display:true,text:'SEC yield attribution (%)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
@@ -1383,6 +1400,73 @@ function simColor(p) {
   const b = Math.round(247 - t * 132);
   return `rgb(${r},${g},${b})`;
 }
+
+// ═══════════════ v4.2: HISTORICAL YIELD DECOMP MODAL ═══════════════
+function showDecompHistoryModal(data, tk) {
+  const series = (data.yield_decomp_history || {})[tk];
+  if (!series || !series.length) {
+    alert(`No historical yield decomp for ${tk} — FT funds (FLBL/FLDAX/FISAX) lack composition history.`);
+    return;
+  }
+  // Close any existing modal
+  document.querySelectorAll('.modal-backdrop').forEach(n => n.remove());
+  const m = data.meta[tk];
+  const backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop';
+  backdrop.innerHTML = `
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>${tk} · Yield Decomp Over Time (${series.length} records · ${series[0].date} → ${series[series.length-1].date})</h3>
+        <button type="button" class="modal-close" aria-label="Close">× Close</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text-1);margin-bottom:10px">
+          <b style="color:var(--accent)">${m.name || tk}</b> · ${m.family || ''} · ER ${m.expense_ratio_pct ?? '–'}% · duration ${m.duration?.toFixed(2) ?? '–'}y
+          <br><span style="color:var(--text-2)">Rate carry uses period-specific 2Y-3M slope. OAS history uses long-run averages (IG=1.2%, HY=4.5%) where FRED unavailable.</span>
+        </div>
+        <div class="chart-wrap" style="height:460px"><canvas id="modal-decomp-chart"></canvas></div>
+        <div style="margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--text-2)">
+          <b>Reading:</b> Stacked area = estimated SEC yield composition at each date. Dots = actual SEC yield (where available).
+          Gap between dots and stack top = unexplained residual (sec-lending, model mis-spec, tax equivalence).
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  backdrop.querySelector('.modal-close').addEventListener('click', () => backdrop.remove());
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) backdrop.remove(); });
+  // Draw stacked-area chart
+  const labels = series.map(r => r.date);
+  const secYields = series.map(r => r.sec_yield ?? null);
+  new Chart(backdrop.querySelector('#modal-decomp-chart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {label:'T-bill baseline', data: series.map(r => r.baseline), backgroundColor:'#005f9e', borderColor:'#005f9e', borderWidth:0, pointRadius:0, fill:'origin', stack:'y', tension:0},
+        {label:'Rate carry',      data: series.map(r => r.rate_carry), backgroundColor:'#00aea9', borderColor:'#00aea9', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
+        {label:'Credit spread',   data: series.map(r => r.credit_carry), backgroundColor:'#e2a252', borderColor:'#e2a252', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
+        {label:'Structure spread',data: series.map(r => r.structure_carry), backgroundColor:'#6b5fac', borderColor:'#6b5fac', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
+        {label:'Floater/MM',      data: series.map(r => r.floater_carry), backgroundColor:'#008eaa', borderColor:'#008eaa', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
+        {label:'Expense drag',    data: series.map(r => r.expense_drag || 0), backgroundColor:'#8896a7', borderColor:'#8896a7', borderWidth:0, pointRadius:0, fill:'-1', stack:'y', tension:0},
+        {label:'Actual SEC yield', data: secYields, borderColor:'#b42573', borderWidth:2.5, pointRadius:3, pointBackgroundColor:'#b42573', fill:false, type:'line', tension:0, spanGaps:false},
+      ],
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom', labels:{font:{family:'JetBrains Mono',size:10},color:'#596577',boxWidth:12}},
+        tooltip:{mode:'index', intersect:false}
+      },
+      scales:{
+        x:{grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',maxTicksLimit:10}},
+        y:{stacked:true, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback:v=>v.toFixed(1)+'%'}, title:{display:true,text:'Yield attribution (%)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
+      }
+    }
+  });
+}
+// Esc also closes modals
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop').forEach(n => n.remove()); });
 
 $$('.pill-btn[data-expo]').forEach(b => b.addEventListener('click', () => {
   EXPO_VIEW = b.dataset.expo;
