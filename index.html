@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Short-Duration Competitor Dashboard v4.1</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#ffffff;--bg-1:#f7f7f7;--bg-2:#edf0f4;--bg-3:#e2e6ec;
+  --border:#d0d4da;--border-bright:#b0b8c4;
+  --text-0:#2d3748;--text-1:#596577;--text-2:#8896a7;
+  --accent:#005f9e;--accent-dim:#005f9e18;
+  --accent2:#00aea9;--red:#d91943;--red-dim:#d919431a;
+  --amber:#e2a252;--amber-dim:#e2a25222;
+  --blue:#0057b8;--blue-dim:#0057b822;
+  --purple:#6b5fac;--cyan:#008eaa;--green:#00aea9;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+  --navy:#00294b;--raspberry:#b42573;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg-1);color:var(--text-0);font-family:var(--sans);font-size:13px;line-height:1.5;overflow-x:hidden}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg-2)}::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:3px}
+.header{background:var(--navy);border-bottom:3px solid var(--raspberry);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:16px}
+.ticker{font-family:var(--mono);font-size:18px;font-weight:700;color:#7bd0e2;letter-spacing:2px}
+.header-meta .name{font-size:13px;color:#aebece;font-weight:500}
+.header-meta .sub{font-family:var(--mono);font-size:10px;color:#7b8fa6;letter-spacing:1px}
+.nav-tab{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border:1px solid #1a4a70;background:transparent;color:#7b8fa6;cursor:pointer;transition:all .2s;border-radius:4px}
+.nav-tab:hover,.nav-tab.active{color:#def5ff;border-color:#7bd0e2;background:#7bd0e215}
+.coverage-ribbon{background:#00294b;color:#aebece;padding:6px 24px;font-family:var(--mono);font-size:10px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #1a4a70}
+.coverage-ribbon b{color:#def5ff}
+.coverage-ribbon .flag{display:inline-block;padding:1px 6px;border-radius:3px;border:1px solid}
+.flag.warn{color:#f5c4c0;border-color:#e8846e}
+.flag.info{color:#7bd0e2;border-color:#50b8c8}
+.main{padding:16px 24px 40px;max-width:1800px;margin:0 auto}
+.section{display:none}.section.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.summary-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--bg-0);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(0,41,75,.05)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.green::before{background:var(--accent2)}.stat-card.red::before{background:var(--red)}.stat-card.blue::before{background:var(--blue)}.stat-card.amber::before{background:var(--amber)}.stat-card.purple::before{background:var(--purple)}.stat-card.cyan::before{background:var(--cyan)}
+.stat-label{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-2);margin-bottom:6px}
+.stat-value{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--text-0)}
+.stat-sub{font-family:var(--mono);font-size:10px;color:var(--text-2);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.panel{background:var(--bg-0);border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:0 1px 2px rgba(0,41,75,.05);margin-bottom:16px}
+.panel-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-2);flex-wrap:wrap;gap:6px}
+.panel-title{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-1);font-weight:600}
+.panel-sub{font-family:var(--mono);font-size:10px;color:var(--text-2)}
+.panel-body{padding:14px}
+.panel-body.flush{padding:0}
+.chart-wrap{position:relative;width:100%}
+.chart-wrap canvas{width:100%!important}
+.note-row{font-family:var(--mono);font-size:10px;color:var(--text-2);padding:8px 14px;background:var(--bg-2);border-top:1px solid var(--border)}
+.note-row b{color:var(--navy)}
+.data-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+.data-table thead th{background:var(--bg-2);border-bottom:1px solid var(--border-bright);padding:8px 10px;text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-2);font-weight:600;cursor:pointer;white-space:nowrap;user-select:none;position:sticky;top:0;z-index:5}
+.data-table thead th:hover{color:var(--accent)}
+.data-table thead th.sorted-asc::after{content:' \25B2';color:var(--accent)}
+.data-table thead th.sorted-desc::after{content:' \25BC';color:var(--accent)}
+.data-table tbody tr{border-bottom:1px solid var(--border)}
+.data-table tbody tr:hover{background:var(--bg-2)}
+.data-table td{padding:7px 10px;white-space:nowrap;color:var(--text-1)}
+.data-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.data-table td.ticker-cell{color:var(--accent);font-weight:600}
+.data-table td.family-cell{color:var(--text-1);font-size:10px}
+.tile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.tile{background:var(--bg-0);border:1px solid var(--border);border-radius:6px;padding:12px;transition:all .15s}
+.tile:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,41,75,.08)}
+.tile-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:6px}
+.tile-ticker{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:1px}
+.tile-badge{font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase}
+.tile-name{font-size:10px;color:var(--text-1);margin-bottom:6px;line-height:1.3;min-height:1.2em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px;font-family:var(--mono);font-size:10px;color:var(--text-2);margin-bottom:6px}
+.tile-stats div{display:flex;justify-content:space-between}
+.tile-stats b{color:var(--text-0);font-weight:600}
+.tile-stats .neg{color:var(--red)}
+.tile-spark{height:32px}
+.heat-cell{padding:8px 6px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-0);border-radius:3px;min-width:56px}
+.heat-cell b{font-size:11px;font-weight:700;display:block}
+.heat-cell small{display:block;font-size:8px;color:var(--text-2);margin-top:2px;font-weight:400}
+.matrix-wrap{overflow-x:auto}
+.matrix-table{width:100%;border-collapse:separate;border-spacing:3px;font-family:var(--mono);font-size:11px}
+.matrix-table th{padding:6px 8px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-2);text-align:center;font-weight:600}
+.matrix-table td.tk{padding:6px 8px;font-weight:600;color:var(--accent);text-align:left}
+.matrix-table td.fam{padding:6px 6px;color:var(--text-2);font-size:9px;text-align:left;text-transform:uppercase;letter-spacing:.5px}
+.stress-cell{font-family:var(--mono);font-size:11px;text-align:right;padding:6px 8px;border-radius:3px;min-width:68px}
+.pill-group{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.pill-btn{font-family:var(--mono);font-size:10px;letter-spacing:.5px;padding:5px 12px;border:1px solid var(--border-bright);background:transparent;color:var(--text-1);cursor:pointer;border-radius:16px}
+.pill-btn:hover,.pill-btn.active{color:#fff;border-color:var(--accent);background:var(--accent)}
+.vehicle-etf{color:#00685f;background:#c6e6d5;border:1px solid #00aea9}
+.vehicle-mf{color:#7a3b00;background:#f7e8c5;border:1px solid #e2a252}
+.vehicle-hy{color:#8a1235;background:#f5c4c0;border:1px solid #d91943}
+.cat-ultra{color:#006078;background:#b0e8f0;border:1px solid #008eaa}
+.cat-short{color:#4a3a7a;background:#d4d0f0;border:1px solid #6b5fac}
+.legend{display:flex;gap:14px;font-family:var(--mono);font-size:10px;color:var(--text-2);align-items:center;flex-wrap:wrap}
+.legend .chip{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+.callout{background:var(--bg-2);border-left:3px solid var(--accent);padding:10px 14px;margin:12px;border-radius:0 4px 4px 0;font-size:11px;font-family:var(--sans);color:var(--text-0)}
+.callout.warn{border-left-color:var(--red);background:var(--red-dim)}
+.callout b{color:var(--navy)}
+.loading-overlay{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
+.loading-overlay.hide{opacity:0;pointer-events:none}
+.loading-text{font-family:var(--mono);font-size:14px;color:#7bd0e2;letter-spacing:3px}
+.loading-text::after{content:'';animation:dots 1.5s infinite}
+@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+.cal-cell{font-family:var(--mono);font-size:9px;text-align:center;padding:3px 4px;min-width:26px;border-radius:2px}
+.cal-table{border-collapse:separate;border-spacing:1px;font-family:var(--mono);font-size:10px}
+.cal-table th{padding:3px;color:var(--text-2);font-size:9px;text-align:center;font-weight:600}
+.cal-table td.yrlabel{padding:3px 6px;font-weight:600;color:var(--accent);text-align:right}
+.help-btn{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-family:var(--mono);font-size:9px;font-weight:700;border:1px solid var(--accent);cursor:pointer;margin-left:4px;user-select:none;transition:all .15s;padding:0;line-height:1}
+.help-btn:hover,.help-btn:focus-visible{background:var(--accent);color:#fff;outline:2px solid var(--raspberry);outline-offset:1px}
+.rating-warn{background:#f5c4c0;color:#8a1235;padding:8px 14px;font-family:var(--mono);font-size:11px;border-left:3px solid var(--red);margin:10px 14px;border-radius:0 4px 4px 0}
+.rating-warn b{color:#8a1235}
+.error-state{padding:40px;text-align:center;font-family:var(--mono);color:var(--red)}
+.error-state h3{font-size:14px;margin-bottom:10px}
+.popover{position:absolute;background:var(--navy);color:#def5ff;padding:10px 14px;border-radius:4px;max-width:340px;font-family:var(--sans);font-size:11px;line-height:1.5;box-shadow:0 4px 16px rgba(0,41,75,.25);z-index:200;border-top:2px solid var(--raspberry)}
+.popover::before{content:'';position:absolute;top:-6px;left:20px;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid var(--raspberry)}
+.popover h4{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#7bd0e2;margin-bottom:6px}
+.popover code{font-family:var(--mono);background:#00416e;padding:1px 5px;border-radius:2px;color:#def5ff}
+.popover .eg{font-family:var(--mono);font-size:10px;color:#aebece;margin-top:6px;padding-top:6px;border-top:1px solid #1a4a70}
+.exposure-matrix{border-collapse:separate;border-spacing:2px;font-family:var(--mono);font-size:10px}
+.exposure-matrix th{padding:3px 4px;font-size:9px;color:var(--text-2);font-weight:600}
+.exposure-matrix td{padding:3px;text-align:center;border-radius:2px;min-width:26px}
+.exposure-matrix td.tk-label{padding:3px 6px;font-weight:600;color:var(--accent);text-align:right}
+.exposure-matrix td.self{background:var(--bg-2);color:var(--text-2)}
+@media(max-width:1200px){.summary-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:800px){.summary-row{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="loading-overlay" id="loader"><div class="loading-text">LOADING</div></div>
+
+<div class="header">
+  <div class="header-left">
+    <div class="ticker">COMP v4.1</div>
+    <div class="header-meta">
+      <div class="name">Short-Duration · Competitor Risk Lens</div>
+      <div class="sub" id="hdr-sub">Loading...</div>
+    </div>
+  </div>
+  <div>
+    <button class="nav-tab active" data-section="landscape">Landscape</button>
+    <button class="nav-tab" data-section="risk">Risk Matrix</button>
+    <button class="nav-tab" data-section="stress">Stress</button>
+    <button class="nav-tab" data-section="history">Historical Pain</button>
+    <button class="nav-tab" data-section="drill">Drill-down</button>
+    <button class="nav-tab" data-section="yield">Yield Decomp</button>
+    <button class="nav-tab" data-section="factors">Factor Betas</button>
+  </div>
+</div>
+<div class="coverage-ribbon" id="coverage-ribbon"></div>
+
+<div class="main">
+
+  <!-- ═══════════════ LANDSCAPE ═══════════════ -->
+  <section class="section active" id="sec-landscape">
+    <div class="summary-row">
+      <div class="stat-card blue"><div class="stat-label">Funds covered</div><div class="stat-value" id="stat-funds">–</div><div class="stat-sub" id="stat-funds-sub">–</div></div>
+      <div class="stat-card green"><div class="stat-label">Highest net yield</div><div class="stat-value" id="stat-netyield">–</div><div class="stat-sub" id="stat-netyield-sub">–</div></div>
+      <div class="stat-card cyan"><div class="stat-label">Longest track record</div><div class="stat-value" id="stat-longest">–</div><div class="stat-sub" id="stat-longest-sub">–</div></div>
+      <div class="stat-card red"><div class="stat-label">Worst historical DD</div><div class="stat-value" id="stat-dd">–</div><div class="stat-sub" id="stat-dd-sub">–</div></div>
+      <div class="stat-card purple"><div class="stat-label">Most rate-sensitive</div><div class="stat-value" id="stat-rate">–</div><div class="stat-sub" id="stat-rate-sub">–</div></div>
+      <div class="stat-card amber"><div class="stat-label">Most HY-exposed</div><div class="stat-value" id="stat-hy">–</div><div class="stat-sub" id="stat-hy-sub">–</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Position Map — where each fund sits on yield-per-unit-of-risk</span>
+        <span class="panel-sub">x: duration · y: net yield (SEC − ER) · bubble size: realized max DD · color: credit quality score</span>
+      </div>
+      <div class="panel-body"><div class="chart-wrap" style="height:440px"><canvas id="chart-position"></canvas></div></div>
+      <div class="callout">
+        <b>How to read:</b> upper-left = high yield per unit duration (the competitor sweet spot). Big red bubbles
+        = big max drawdown per unit yield (risky way to earn return). Look for funds in the upper-left <i>without</i>
+        big bubbles — that's where passive money goes to look efficient.
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Fund cards — NAV history · net yield · vehicle</span>
+        <span class="panel-sub">Sparkline = normalized NAV from inception (↑ = growth)</span>
+      </div>
+      <div class="panel-body">
+        <div class="tile-grid" id="landscape-tiles"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ RISK MATRIX ═══════════════ -->
+  <section class="section" id="sec-risk">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Seven-Axis Risk Matrix <button type="button" class="help-btn" aria-label="Help" data-help="matrix-overview">?</button></span>
+        <span class="legend">
+          <span><span class="chip" style="background:#e5f2ee"></span>low</span>
+          <span><span class="chip" style="background:#f7e8c5"></span>moderate</span>
+          <span><span class="chip" style="background:#e5836f"></span>high</span>
+          <span><span class="chip" style="background:#c94e4a"></span>severe</span>
+        </span>
+      </div>
+      <div class="panel-body flush"><div class="matrix-wrap" id="risk-matrix"></div></div>
+      <div class="note-row"><b>Tip:</b> click the <span class="help-btn" aria-hidden="true" style="position:relative;top:-1px;pointer-events:none">?</span> in the column headers for each axis's formula and interpretation.</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Exposure similarity — which funds are actually substitutes? <button type="button" class="help-btn" aria-label="Help" data-help="exposure-overview">?</button></span>
+        <span class="panel-sub">Holdings-weight cosine (not CUSIP overlap) — reveals hidden substitutes</span>
+      </div>
+      <div class="panel-body flush">
+        <div style="padding:12px 14px 0" class="pill-group">
+          <button class="pill-btn active" data-expo="sector">By sector weight</button>
+          <button class="pill-btn" data-expo="rating">By rating mix</button>
+          <button class="pill-btn" data-expo="maturity">By maturity bucket</button>
+          <button class="pill-btn" data-expo="factor">By factor-β vector</button>
+          <button class="pill-btn" data-expo="combined">Combined</button>
+        </div>
+        <div class="matrix-wrap" id="exposure-matrix" style="padding:0 14px 14px"></div>
+      </div>
+      <div class="note-row">
+        <b>Cosine similarity</b> ranges 0 (orthogonal) to 1 (identical composition). Read: fund ROW vs fund COL —
+        high cell = the two funds take similar exposure despite potentially holding zero overlapping CUSIPs. Diagonal is 1.
+        Click a cell to compare those two funds' raw vectors (sector/rating/maturity bars).
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Factor correlation — daily return β to 5 factor ETFs (5Y sample)</span>
+        <span class="panel-sub">Replaces the single SGOV/FLBL bars — now full rate × credit × structure exposure grid</span>
+      </div>
+      <div class="panel-body flush"><div class="matrix-wrap" id="factor-heatmap"></div></div>
+      <div class="callout">
+        β&nbsp;<b>SHY</b> = 1-3Y Treasury (rate factor) · β&nbsp;<b>LQD</b> = long IG corp · β&nbsp;<b>HYG</b> = high-yield ·
+        β&nbsp;<b>BKLN</b> = bank loans · β&nbsp;<b>FLOT</b> = floating-rate IG. Computed by OLS on max-available daily
+        returns. Red β&gt;0.5 = fund moves with that factor.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ STRESS ═══════════════ -->
+  <section class="section" id="sec-stress">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Model vs Realized calibration — do the two stress frameworks agree?</span>
+        <span class="panel-sub">x: model worst-case PnL · y: realized worst-case PnL (factor-β × hist shock)</span>
+      </div>
+      <div class="panel-body"><div class="chart-wrap" style="height:460px"><canvas id="chart-stress-calib"></canvas></div></div>
+      <div class="callout warn">
+        <b>On the 45° line = calibrated.</b> Below the line = model is <i>too optimistic</i> (realized is worse than
+        model). FLBL sits far below — model says +0.25 % on a HY shock, realized regression says −3.4 %. For any
+        fund more than 1 % below the line, trust the realized estimate and ignore the model cell.
+      </div>
+    </div>
+
+    <div class="pill-group">
+      <button class="pill-btn active" data-stress="model">Model (dur × shock)</button>
+      <button class="pill-btn" data-stress="realized">Realized (factor-β × historical shock)</button>
+    </div>
+
+    <div class="panel" id="panel-stress-model">
+      <div class="panel-header">
+        <span class="panel-title">Model-based stress — duration × shock + 1mo carry</span>
+        <span class="panel-sub">Systematically understates bank-loan tails; see Realized tab for factor-regression version</span>
+      </div>
+      <div class="panel-body flush"><div class="matrix-wrap" id="stress-model"></div></div>
+      <div class="callout warn">
+        <b>Known bias:</b> FLBL's +300bp HY blow-out shows model PnL near 0 — but the factor-regression version (pill above)
+        shows realized PnL of −3 to −7 % (β<sub>BKLN</sub>=0.44 × historical −8 % BKLN shock). Trust the realized column for credit-sensitive funds.
+      </div>
+    </div>
+
+    <div class="panel" id="panel-stress-realized" style="display:none">
+      <div class="panel-header">
+        <span class="panel-title">Realized stress — β<sub>factor</sub> × historical 5th-percentile monthly shock</span>
+        <span class="panel-sub">Shocks: SHY −1.5 % · LQD −5 % · HYG −7 % · BKLN −8 % · FLOT −1 %</span>
+      </div>
+      <div class="panel-body flush"><div class="matrix-wrap" id="stress-realized"></div></div>
+      <div class="callout">
+        Each cell = fund's daily-return β to that factor × the factor's historical severe-month shock + estimated monthly alpha.
+        R² column shows how much of the fund's variance is explained by the 5-factor model — low R² means the regression is weak
+        and the PnL estimate is unreliable.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ HISTORICAL PAIN ═══════════════ -->
+  <section class="section" id="sec-history">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Drawdown chart — full available history (daily for ETFs, monthly for FT pre-inception era)</span>
+        <span class="panel-sub" id="hist-range">–</span>
+      </div>
+      <div class="panel-body"><div class="chart-wrap" style="height:460px"><canvas id="chart-dd"></canvas></div></div>
+      <div class="callout">
+        Regime shading: <span style="background:#f5c4c065;padding:1px 4px">2008 GFC / Reserve Primary breaks buck</span>,
+        <span style="background:#d4d0f065;padding:1px 4px">2013 Taper Tantrum</span>,
+        <span style="background:#f7e8c565;padding:1px 4px">2020 Mar COVID money-market freeze</span>,
+        <span style="background:#f5c4c065;padding:1px 4px">2022 Fed hike cycle</span>,
+        <span style="background:#f7e8c565;padding:1px 4px">2023 Mar SVB</span>.
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Calendar-month relative return vs SGOV (T-bills) — fund minus SGOV monthly excess in bp</span>
+        <span class="panel-sub">Answers: "when did this fund underperform cash?" — pick fund →</span>
+        <select id="cal-fund-select" style="font-family:var(--mono);font-size:12px;padding:4px 10px;border:1px solid var(--border);background:var(--bg-0);border-radius:4px"></select>
+      </div>
+      <div class="panel-body flush" id="cal-heatmap-wrap"></div>
+      <div class="callout">
+        Green = fund beat SGOV that month, red = underperformed. 1 bp = 0.01 %.
+        A fund must explain the red cells: in 2022 Q1–Q3 almost every fund had red cells (Fed hikes), but those
+        with &lt;−50 bp monthly red are the ones you'd compete against by being shorter-duration.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Drawdown stats — peak, trough, recovery</span></div>
+        <div class="panel-body flush">
+          <table class="data-table" id="tbl-dd">
+            <thead><tr>
+              <th data-sort="ticker">Ticker</th>
+              <th data-sort="family">Fam</th>
+              <th data-sort="max_dd" class="num">Max DD %</th>
+              <th data-sort="peak">Peak</th>
+              <th data-sort="trough">Trough</th>
+              <th data-sort="rec" class="num">Rec (d)</th>
+              <th data-sort="vol" class="num">Vol %</th>
+              <th data-sort="ret" class="num">Ann Ret %</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Risk vs Return — full-available annualized</span></div>
+        <div class="panel-body"><div class="chart-wrap" style="height:420px"><canvas id="chart-riskret"></canvas></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ DRILL-DOWN ═══════════════ -->
+  <section class="section" id="sec-drill">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Per-fund drill-down — NAV vs factor ETFs, normalized to 100 at common start</span>
+        <span class="panel-sub">Pick fund →</span>
+        <select id="drill-fund-select" style="font-family:var(--mono);font-size:12px;padding:4px 10px;border:1px solid var(--border);background:var(--bg-0);border-radius:4px"></select>
+      </div>
+      <div class="panel-body"><div class="chart-wrap" style="height:480px"><canvas id="chart-drill-nav"></canvas></div></div>
+      <div class="callout">
+        <b>Fund line + 5 factor reference lines</b> (SHY, LQD, HYG, BKLN, FLOT) — all rebased to 100 at the fund's
+        inception. If the fund tracks a factor tightly, the lines sit on top of each other. Divergence = fund did
+        something different (manager timing, ABS/CLO exposure, duration bet). Use this alongside the factor-β
+        table to see the linear story AND the nonlinear story.
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Drill fund: factor β + stress read</span></div>
+        <div class="panel-body" id="drill-beta-box" style="font-family:var(--mono);font-size:11px;color:var(--text-1)"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Drill fund: calendar-month excess vs SGOV</span></div>
+        <div class="panel-body flush" id="drill-cal-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ YIELD DECOMP ═══════════════ -->
+  <section class="section" id="sec-yield">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">SEC-yield attribution — T-bill + rate carry + credit + structure + floater − ER + residual</span>
+        <span class="panel-sub" id="decomp-inputs">–</span>
+      </div>
+      <div class="panel-body"><div class="chart-wrap" style="height:540px"><canvas id="chart-decomp"></canvas></div></div>
+      <div class="callout">
+        <b>Residual ≠ manager alpha.</b> It is SEC yield minus (baseline + rate carry + credit + structure + floater − ER).
+        Positive residual can be sec-lending income, tight-spread edge, or security selection — <b>or</b> OAS assumptions
+        being too low (stale hardcoded fallback, FRED currently unreachable). Negative residual can be fee drag beyond ER,
+        tax-equivalence distortion (muni funds SUB/SMMU show negative because baseline is taxable bill yield), or
+        over-pay for risk. Don't attribute this to manager skill without a side-by-side factor regression.
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><span class="panel-title">Net yield leaderboard — SEC yield minus expense ratio</span></div>
+      <div class="panel-body flush">
+        <table class="data-table" id="tbl-netyield">
+          <thead><tr>
+            <th>Ticker</th><th>Family</th><th>Vehicle</th><th class="num">SEC Yield</th>
+            <th class="num">ER</th><th class="num">Net Yield</th><th class="num">Duration</th>
+            <th class="num">Net YPD</th><th class="num">Residual</th>
+          </tr></thead><tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FACTOR BETAS ═══════════════ -->
+  <section class="section" id="sec-factors">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Factor regression — fund daily returns on SHY, LQD, HYG, BKLN, FLOT</span>
+        <span class="panel-sub">OLS, max-available daily data, no lookback cutoff. α is annualized.</span>
+      </div>
+      <div class="panel-body flush">
+        <table class="data-table" id="tbl-betas">
+          <thead><tr>
+            <th>Ticker</th><th>Fam</th><th class="num">β SHY</th><th class="num">β LQD</th>
+            <th class="num">β HYG</th><th class="num">β BKLN</th><th class="num">β FLOT</th>
+            <th class="num">α (ann %)</th><th class="num">R²</th><th class="num">N obs</th><th>Window</th>
+          </tr></thead><tbody></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <b>Reading:</b> β&nbsp;&gt; 0.3 on a factor means the fund moves meaningfully with that factor. R² &gt; 0.3 means
+        the 5-factor model explains most of the fund's return variance; low R² (&lt; 0.15) means the fund has
+        idiosyncratic drivers (manager timing, ABS/CLO, sec-lending) the linear model can't capture.
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const DATA_URL = './short_duration_risk.json';
+const STATE = { tab: 'landscape', stressView: 'model', calFund: 'MINT', drillFund: 'MINT' };
+function $(sel, root=document) { return root.querySelector(sel); }
+function $$(sel, root=document) { return Array.from(root.querySelectorAll(sel)); }
+function fmtNum(n, dp=2) { if (n === null || n === undefined || isNaN(n)) return '–'; return Number(n).toLocaleString('en-US', {minimumFractionDigits:dp, maximumFractionDigits:dp}); }
+function fmtPct(n, dp=2) { if (n === null || n === undefined || isNaN(n)) return '–'; return fmtNum(n, dp) + '%'; }
+function fmtBn(n) { if (!n) return '–'; if (n >= 1e9) return '$' + (n/1e9).toFixed(1) + 'B'; if (n >= 1e6) return '$' + (n/1e6).toFixed(0) + 'M'; return '$' + n.toLocaleString(); }
+
+function riskColor(score) {
+  const t = Math.max(0, Math.min(100, score)) / 100;
+  const stops = [[0,[229,242,238]],[0.2,[198,230,213]],[0.4,[247,232,197]],[0.6,[240,194,154]],[0.8,[229,131,111]],[1,[201,78,74]]];
+  for (let i=1;i<stops.length;i++){if(t<=stops[i][0]){const [t0,c0]=stops[i-1],[t1,c1]=stops[i];const k=(t-t0)/(t1-t0);return `rgb(${Math.round(c0[0]+k*(c1[0]-c0[0]))},${Math.round(c0[1]+k*(c1[1]-c0[1]))},${Math.round(c0[2]+k*(c1[2]-c0[2]))})`;}}
+  return `rgb(${stops[5][1].join(',')})`;
+}
+function stressColor(pnl, scale=1.5) {
+  if (pnl === null || pnl === undefined) return '#e5e5e5';
+  const t = Math.max(-1, Math.min(1, pnl / scale));
+  if (t >= 0) {
+    const k = t;
+    return `rgb(${Math.round(229-k*130)},${Math.round(242-k*35)},${Math.round(238-k*80)})`;
+  } else {
+    const k = -t;
+    return `rgb(${Math.round(252-k*50)},${Math.round(232-k*160)},${Math.round(220-k*170)})`;
+  }
+}
+function betaColor(b, max=1.0) {
+  if (b === null || b === undefined) return '#e5e5e5';
+  const t = Math.max(-1, Math.min(1, b / max));
+  if (t >= 0) return `rgb(${Math.round(229-t*130)},${Math.round(242-t*35)},${Math.round(238-t*80)})`;
+  return `rgb(${Math.round(252+t*30)},${Math.round(232+t*100)},${Math.round(220+t*140)})`;
+}
+function excessColor(bp) {
+  if (bp === null || bp === undefined) return '#e5e5e5';
+  const t = Math.max(-1, Math.min(1, bp / 100));
+  if (t >= 0) return `rgb(${Math.round(229-t*130)},${Math.round(242-t*35)},${Math.round(238-t*80)})`;
+  const k = -t;
+  return `rgb(${Math.round(252-k*50)},${Math.round(232-k*160)},${Math.round(220-k*170)})`;
+}
+
+function switchTab(name) {
+  STATE.tab = name;
+  $$('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.section === name));
+  $$('.section').forEach(s => s.classList.toggle('active', s.id === 'sec-' + name));
+  syncURL();
+}
+function syncURL() {
+  const url = new URL(window.location);
+  url.searchParams.set('tab', STATE.tab);
+  if (STATE.calFund) url.searchParams.set('cal', STATE.calFund);
+  if (STATE.drillFund) url.searchParams.set('drill', STATE.drillFund);
+  history.replaceState(null, '', url);
+}
+function readURL() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('tab')) STATE.tab = p.get('tab');
+  if (p.get('cal')) STATE.calFund = p.get('cal');
+  if (p.get('drill')) STATE.drillFund = p.get('drill');
+}
+$$('.nav-tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.section)));
+
+async function main() {
+  readURL();
+  let data;
+  try {
+    const resp = await fetch(DATA_URL);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} fetching ${DATA_URL}`);
+    data = await resp.json();
+  } catch (err) {
+    $('#loader').innerHTML = `<div class="error-state"><h3>Failed to load data</h3><div>${err.message}</div><div style="margin-top:8px;color:var(--text-2)">Check browser console · verify short_duration_risk.json is accessible</div></div>`;
+    throw err;
+  }
+  window.DATA = data;
+  const tickers = Object.keys(data.risk).sort((a,b) => (data.risk[a].rate_value||0) - (data.risk[b].rate_value||0));
+  window.TICKERS = tickers;
+
+  renderHeader(data);
+  renderCoverage(data, tickers);
+  renderPositionMap(data, tickers);
+  renderLandscape(data, tickers);
+  renderRiskMatrix(data, tickers);
+  renderFactorHeatmap(data, tickers);
+  renderStressCalibration(data, tickers);
+  renderStress(data, tickers, 'model');
+  renderStress(data, tickers, 'realized');
+  renderDrawdown(data, tickers);
+  renderCalendarPicker(data, tickers);
+  renderDDTable(data, tickers);
+  renderRiskRet(data, tickers);
+  renderDrillPicker(data, tickers);
+  renderYieldDecomp(data, tickers);
+  renderNetYieldTable(data, tickers);
+  renderBetaTable(data, tickers);
+  renderExposureMatrix(data, tickers);
+
+  $$('.pill-btn').forEach(b => b.addEventListener('click', () => {
+    const v = b.dataset.stress;
+    STATE.stressView = v;
+    $$('.pill-btn').forEach(x => x.classList.toggle('active', x.dataset.stress === v));
+    $('#panel-stress-model').style.display = v === 'model' ? '' : 'none';
+    $('#panel-stress-realized').style.display = v === 'realized' ? '' : 'none';
+  }));
+
+  switchTab(STATE.tab);
+  $('#loader').classList.add('hide');
+  setTimeout(() => $('#loader').remove(), 500);
+}
+
+function renderHeader(data) {
+  const nFunds = Object.keys(data.risk).length;
+  $('#hdr-sub').textContent = `${nFunds} funds · built ${data.build_time.slice(0,10)} · 3M T-bill ${data.tbill_3m}% · 2Y-3M slope ${data.term_slope_pct?.toFixed(2)}%/yr · OAS IG ${data.oas?.ig}% / HY ${data.oas?.hy}% (${data.oas?.source})`;
+}
+
+function renderCoverage(data, tickers) {
+  const oldest = tickers.map(tk => data.nav_stats[tk]?.window_start).filter(Boolean).sort()[0];
+  const newest = tickers.map(tk => data.nav_stats[tk]?.window_end).filter(Boolean).sort().slice(-1)[0];
+  const nEtf = tickers.filter(tk => (data.meta[tk].vehicle||'ETF') === 'ETF').length;
+  const nMF = tickers.length - nEtf;
+  const dropped = (data.dropped || []);
+  const gsho = !data.nav_stats['GSHO'] ? '<span class="flag warn">GSHO delisted</span>' : '';
+  const drops = dropped.map(d => `<span class="flag warn">${d.ticker} dropped (${d.reason})</span>`).join(' ');
+
+  $('#coverage-ribbon').innerHTML = `
+    <span><b>Coverage:</b> ${oldest} → ${newest}</span>
+    <span><b>Vehicles:</b> ${nEtf} ETF · ${nMF} Class-A MF</span>
+    <span class="flag info">Bank-loan FLBL: stress use realized, not model</span>
+    ${gsho} ${drops}
+  `;
+}
+
+function renderLandscape(data, tickers) {
+  // stat cards
+  const yields = tickers.map(tk => ({tk, ny: data.meta[tk].net_yield})).filter(x => x.ny != null).sort((a,b) => b.ny - a.ny);
+  const longest = tickers.map(tk => ({tk, start: data.nav_stats[tk]?.window_start})).filter(x => x.start).sort((a,b) => a.start.localeCompare(b.start))[0];
+  const worstDD = tickers.map(tk => ({tk, dd: data.nav_stats[tk]?.max_drawdown_pct, date: data.nav_stats[tk]?.trough_date})).filter(x => x.dd != null).sort((a,b) => a.dd - b.dd)[0];
+  const ratesort = tickers.map(tk => ({tk, d: data.meta[tk].duration})).sort((a,b) => (b.d||0) - (a.d||0))[0];
+  const hysort = tickers.map(tk => ({tk, hy: data.risk[tk].hy_value})).sort((a,b) => b.hy - a.hy)[0];
+
+  $('#stat-funds').textContent = tickers.length;
+  $('#stat-funds-sub').textContent = `3 sources · iShares · PIMCO · Franklin Templeton`;
+  if (yields[0]) { $('#stat-netyield').textContent = fmtPct(yields[0].ny, 2); $('#stat-netyield-sub').textContent = `${yields[0].tk} (after ${data.meta[yields[0].tk].expense_ratio_pct}% ER)`; }
+  if (longest) { const yrs = ((new Date() - new Date(longest.start))/(365.25*86400000)).toFixed(0); $('#stat-longest').textContent = `${yrs}y`; $('#stat-longest-sub').textContent = `${longest.tk} since ${longest.start}`; }
+  if (worstDD) { $('#stat-dd').textContent = fmtPct(worstDD.dd, 1); $('#stat-dd-sub').textContent = `${worstDD.tk} · ${worstDD.date}`; }
+  if (ratesort) { $('#stat-rate').textContent = `${ratesort.d?.toFixed(2)}y`; $('#stat-rate-sub').textContent = `${ratesort.tk} · rate factor lead`; }
+  if (hysort) { $('#stat-hy').textContent = `${hysort.hy.toFixed(0)}%`; $('#stat-hy-sub').textContent = `${hysort.tk} · sub-IG weight`; }
+
+  const grid = $('#landscape-tiles');
+  grid.innerHTML = '';
+  tickers.forEach((tk, i) => {
+    const m = data.meta[tk]; const r = data.risk[tk];
+    const vehicle = m.vehicle || 'ETF';
+    const isHY = r.hy_value > 50;
+    const vehicleClass = vehicle === 'ETF' ? (isHY ? 'vehicle-hy' : 'vehicle-etf') : 'vehicle-mf';
+    const vehicleLabel = vehicle === 'ETF' ? (isHY ? 'ETF · HY' : 'ETF') : 'MF-A';
+    const catClass = m.category === 'Ultra-Short' ? 'cat-ultra' : 'cat-short';
+
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.innerHTML = `
+      <div class="tile-head">
+        <span class="tile-ticker">${tk}</span>
+        <span>
+          <span class="tile-badge ${catClass}">${m.category || ''}</span>
+          <span class="tile-badge ${vehicleClass}">${vehicleLabel}</span>
+        </span>
+      </div>
+      <div class="tile-name">${(m.name || '').slice(0, 60)}</div>
+      <div class="tile-stats">
+        <div><span>SEC y</span><b>${fmtPct(m.sec_yield, 2)}</b></div>
+        <div><span>ER</span><b>${fmtPct(m.expense_ratio_pct, 2)}</b></div>
+        <div><span>Net y</span><b>${fmtPct(m.net_yield, 2)}</b></div>
+        <div><span>Dur</span><b>${m.duration?.toFixed(2) || '–'}y</b></div>
+        <div><span>AUM</span><b>${fmtBn(m.aum)}</b></div>
+        <div><span>Max DD</span><b class="${(m.max_drawdown_pct||0) < -3 ? 'neg' : ''}">${fmtPct(m.max_drawdown_pct, 1)}</b></div>
+      </div>
+      <div class="tile-spark"><canvas id="spark-${tk}"></canvas></div>
+    `;
+    grid.appendChild(tile);
+
+    // Sparkline
+    const nav = (data.nav_ext || {})[tk] || [];
+    if (nav.length > 1) {
+      const ctx = document.getElementById(`spark-${tk}`).getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: { labels: nav.map(p => p.d), datasets: [{ data: nav.map(p => p.p), borderColor: isHY ? '#d91943' : '#005f9e', borderWidth: 1, pointRadius: 0, tension: 0, fill: true, backgroundColor: isHY ? '#d9194322' : '#005f9e22' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false}, tooltip: { callbacks: { title: i => i[0].label, label: i => fmtNum(i.raw, 1) + ' (idx 100)' } } }, scales: { x: { display: false }, y: { display: false } } }
+      });
+    }
+  });
+}
+
+function renderRiskMatrix(data, tickers) {
+  // Rank-normalize rate score within universe
+  const durs = tickers.map(tk => data.risk[tk].rate_value).filter(d => d != null);
+  const minD = Math.min(...durs), maxD = Math.max(...durs);
+  const rankRate = d => maxD > minD ? 100 * (d - minD) / (maxD - minD) : 0;
+
+  const axes = [
+    {k:'rate', label:'Rate', fn:(r) => ({score: rankRate(r.rate_value), raw: `${r.rate_value.toFixed(2)}y`})},
+    {k:'credit', label:'Credit', fn:(r) => ({score: r.credit, raw: `${r.credit.toFixed(0)}`})},
+    {k:'liquidity', label:'Liquidity', fn:(r) => ({score: r.liquidity, raw: `${r.liquidity_value.toFixed(0)}%`})},
+    {k:'conc', label:'Iss Conc', fn:(r, tk) => {
+      // Non-Treasury top-10 — for Treasury-heavy funds concentration is low regardless of CUSIP count
+      const f = data.funds[tk];
+      const holdings = f.holdings_top10 || [];
+      const nontreas = holdings.filter(h => (h.sector || '').toLowerCase() !== 'treasury').reduce((s, h) => s + (h.weight || 0), 0);
+      return {score: Math.min(100, nontreas * 2), raw: `${nontreas.toFixed(0)}%`};
+    }},
+    {k:'mbs', label:'Agency MBS', fn:(r, tk) => {
+      const secs = data.funds[tk].sector_weights || {};
+      const v = secs['Agency MBS'] || 0;
+      return {score: Math.min(100, v * 1.2), raw: `${v.toFixed(0)}%`};
+    }},
+    {k:'abs', label:'ABS / CLO', fn:(r, tk) => {
+      const secs = data.funds[tk].sector_weights || {};
+      const v = secs['Structured Credit'] || 0;
+      return {score: Math.min(100, v * 1.8), raw: `${v.toFixed(0)}%`};
+    }},
+    {k:'hy', label:'Sub-IG', fn:(r) => ({score: r.hy, raw: `${r.hy_value.toFixed(0)}%`})},
+  ];
+
+  const sorted = [...tickers].sort((ta, tb) => {
+    const ra = axes.reduce((s, ax) => s + ax.fn(data.risk[ta], ta).score, 0);
+    const rb = axes.reduce((s, ax) => s + ax.fn(data.risk[tb], tb).score, 0);
+    return rb - ra;
+  });
+
+  let html = '<table class="matrix-table"><thead><tr><th style="text-align:left">Fund</th><th style="text-align:left">Fam</th>';
+  axes.forEach(a => html += `<th>${a.label} <button type="button" class="help-btn" aria-label="Help" data-help="axis-${a.k}">?</button></th>`);
+  html += '</tr></thead><tbody>';
+  sorted.forEach(tk => {
+    const r = data.risk[tk]; const m = data.meta[tk];
+    html += `<tr><td class="tk">${tk}</td><td class="fam">${(m.family||'').replace('Franklin Templeton','FT').replace('iShares','iShr').replace('PIMCO','PIM')}</td>`;
+    axes.forEach(ax => {
+      const {score, raw} = ax.fn(r, tk);
+      html += `<td><div class="heat-cell" style="background:${riskColor(score)}"><b>${score.toFixed(0)}</b><small>${raw}</small></div></td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  $('#risk-matrix').innerHTML = html;
+}
+
+function renderFactorHeatmap(data, tickers) {
+  const factors = ['SHY', 'LQD', 'HYG', 'BKLN', 'FLOT'];
+  let html = '<table class="matrix-table"><thead><tr><th style="text-align:left">Fund</th><th style="text-align:left">Fam</th>';
+  factors.forEach(f => html += `<th>β ${f}</th>`);
+  html += '<th>α (ann %)</th><th>R²</th><th>N</th></tr></thead><tbody>';
+  const sorted = [...tickers].filter(tk => data.factor_betas[tk]).sort((a,b) => (data.factor_betas[b]?.beta_HYG || 0) - (data.factor_betas[a]?.beta_HYG || 0));
+  sorted.forEach(tk => {
+    const b = data.factor_betas[tk]; if (!b) return;
+    const m = data.meta[tk];
+    html += `<tr><td class="tk">${tk}</td><td class="fam">${(m.family||'').replace('Franklin Templeton','FT').replace('iShares','iShr')}</td>`;
+    factors.forEach(f => {
+      const v = b[`beta_${f}`];
+      html += `<td><div class="heat-cell" style="background:${betaColor(v)}"><b>${v?.toFixed(2) ?? '–'}</b></div></td>`;
+    });
+    html += `<td class="num">${b.alpha_annualized_pct?.toFixed(2) ?? '–'}</td>`;
+    html += `<td class="num">${b.r2?.toFixed(2) ?? '–'}</td>`;
+    html += `<td class="num">${b.n_obs}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  $('#factor-heatmap').innerHTML = html;
+}
+
+function renderStress(data, tickers, kind) {
+  const target = kind === 'model' ? '#stress-model' : '#stress-realized';
+  if (kind === 'model') {
+    const keys = ['rate_up_100','rate_up_25','rate_down_100','ig_widen_50','hy_blow_300','struct_stress','mm_crisis','curve_steep'];
+    const shortLabels = { rate_up_100:'+100bp rate', rate_up_25:'+25bp Fed', rate_down_100:'−100bp rate', ig_widen_50:'+50bp IG', hy_blow_300:'+300bp HY', struct_stress:'+200bp ABS', mm_crisis:'MM freeze', curve_steep:'10Y steep' };
+    const sorted = [...tickers].sort((a,b) => Math.min(...keys.map(k => data.stress[a][k].pnl)) - Math.min(...keys.map(k => data.stress[b][k].pnl)));
+    let html = '<table class="matrix-table"><thead><tr><th style="text-align:left">Fund</th>';
+    keys.forEach(k => html += `<th title="${data.stress[sorted[0]][k].label}">${shortLabels[k]}</th>`);
+    html += '</tr></thead><tbody>';
+    sorted.forEach(tk => {
+      html += `<tr><td class="tk">${tk}</td>`;
+      keys.forEach(k => {
+        const pnl = data.stress[tk][k].pnl;
+        html += `<td><div class="stress-cell" style="background:${stressColor(pnl, 1.5)}">${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}%</div></td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $(target).innerHTML = html;
+  } else {
+    const shocks = ['shy','lqd','hyg','bkln','flot','composite'];
+    const labels = { shy:'SHY −1.5%', lqd:'LQD −5%', hyg:'HYG −7%', bkln:'BKLN −8%', flot:'FLOT −1%', composite:'All-at-once' };
+    const rs = data.realized_stress || {};
+    const sorted = [...tickers].filter(tk => rs[tk]).sort((a,b) => (rs[a]?.shock_composite_pnl ?? 0) - (rs[b]?.shock_composite_pnl ?? 0));
+    let html = '<table class="matrix-table"><thead><tr><th style="text-align:left">Fund</th>';
+    shocks.forEach(s => html += `<th>${labels[s]}</th>`);
+    html += '<th>R²</th></tr></thead><tbody>';
+    sorted.forEach(tk => {
+      const r = rs[tk]; if (!r) return;
+      html += `<tr><td class="tk">${tk}</td>`;
+      shocks.forEach(s => {
+        const pnl = r[`shock_${s}_pnl`];
+        html += `<td><div class="stress-cell" style="background:${stressColor(pnl, 4)}">${pnl >= 0 ? '+' : ''}${pnl?.toFixed(2) ?? '–'}%</div></td>`;
+      });
+      html += `<td class="num" style="color:${r.r2 > 0.3 ? 'var(--text-0)' : 'var(--amber)'}">${r.r2?.toFixed(2)}</td>`;
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $(target).innerHTML = html;
+  }
+}
+
+function renderDrawdown(data, tickers) {
+  const palette = ['#005f9e','#00aea9','#b42573','#e2a252','#6b5fac','#d91943','#008eaa','#00294b','#a73f8a','#0057b8','#e8846e','#50b8c8','#9b93d0','#c94e4a','#e8c07a','#597891','#22746b','#81427d','#558d3d'];
+  const datasets = tickers.map((tk, i) => {
+    const ns = data.nav_stats[tk]; if (!ns || !ns.dd_curve) return null;
+    const nav = data.nav_ext[tk] || [];
+    if (nav.length < 10) return null;
+    let peak = nav[0].p;
+    const dd = nav.map(p => { if (p.p > peak) peak = p.p; return { x: p.d, y: (p.p/peak - 1) * 100 }; });
+    return {
+      label: tk,
+      data: dd,
+      borderColor: palette[i % palette.length],
+      borderWidth: 1.2, pointRadius: 0, tension: 0, fill: false,
+      hidden: !['FISAX','FLDAX','FLBL','MINT','LDUR','IGSB','ISTB','SHY'].includes(tk),
+    };
+  }).filter(Boolean);
+
+  // Factor-ETF reference overlays — dashed, lower opacity
+  const factorPalette = {SHY:'#005f9e', LQD:'#6b5fac', HYG:'#d91943', BKLN:'#8a1235', FLOT:'#008eaa'};
+  ['SHY','LQD','HYG','BKLN','FLOT'].forEach(ftk => {
+    const fdd = (data.factor_nav || {})[ftk + '_dd'] || [];
+    if (!fdd.length) return;
+    datasets.push({
+      label: `[factor] ${ftk}`,
+      data: fdd.map(p => ({x: p.d, y: p.dd})),
+      borderColor: factorPalette[ftk],
+      borderWidth: 1.6,
+      borderDash: [6, 4],
+      pointRadius: 0, tension: 0, fill: false,
+      hidden: !['HYG','BKLN','SHY'].includes(ftk),
+    });
+  });
+
+  const ns_keys = Object.keys(data.nav_stats);
+  const oldest = ns_keys.map(tk => data.nav_stats[tk].window_start).sort()[0];
+  const newest = ns_keys.map(tk => data.nav_stats[tk].window_end).sort().slice(-1)[0];
+  $('#hist-range').textContent = `${oldest} → ${newest}`;
+
+  const regimes = [
+    {start:'2008-08-01', end:'2009-06-30', color:'rgba(245,196,192,0.35)', label:'GFC'},
+    {start:'2013-05-01', end:'2013-09-30', color:'rgba(212,208,240,0.35)', label:'Taper'},
+    {start:'2020-03-01', end:'2020-04-15', color:'rgba(247,232,197,0.40)', label:'COVID-MM'},
+    {start:'2022-03-01', end:'2022-12-31', color:'rgba(245,196,192,0.30)', label:'Fed cycle'},
+    {start:'2023-03-01', end:'2023-04-15', color:'rgba(247,232,197,0.40)', label:'SVB'},
+  ];
+  const regimePlugin = {
+    id: 'regimePlugin',
+    beforeDraw(chart) {
+      const {ctx, chartArea, scales: {x}} = chart;
+      regimes.forEach(r => {
+        const xs = x.getPixelForValue(new Date(r.start).getTime());
+        const xe = x.getPixelForValue(new Date(r.end).getTime());
+        if (xs == null || xe == null || xe < chartArea.left || xs > chartArea.right) return;
+        ctx.fillStyle = r.color;
+        ctx.fillRect(Math.max(xs, chartArea.left), chartArea.top, Math.min(xe, chartArea.right) - Math.max(xs, chartArea.left), chartArea.bottom - chartArea.top);
+      });
+    }
+  };
+
+  new Chart($('#chart-dd').getContext('2d'), {
+    type: 'line', data: {datasets}, plugins:[regimePlugin],
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { position: 'bottom', labels: { font: { family: 'JetBrains Mono', size: 10 }, color: '#596577', boxWidth: 10, padding: 6 }}},
+      scales: {
+        x: { type: 'time', time: { unit: 'year' }, grid: { color: '#e2e6ec' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#596577' }},
+        y: { grid: { color: '#e2e6ec' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#596577', callback: v => v + '%' }, title: { display: true, text: 'Drawdown %', color: '#596577', font: { family: 'JetBrains Mono', size: 10 }}}
+      }
+    }
+  });
+}
+
+function renderCalendarPicker(data, tickers) {
+  const avail = tickers.filter(tk => (data.calendar_rel[tk] || []).length > 12);
+  const sel = $('#cal-fund-select');
+  sel.innerHTML = avail.map(tk => `<option value="${tk}">${tk} — ${data.meta[tk].name || ''}</option>`).join('');
+  if (!avail.includes(STATE.calFund)) STATE.calFund = avail[0];
+  sel.value = STATE.calFund;
+  sel.addEventListener('change', (e) => { STATE.calFund = e.target.value; drawCalendar(data); syncURL(); });
+  drawCalendar(data);
+}
+
+function drawCalendar(data) {
+  const tk = STATE.calFund; const cal = data.calendar_rel[tk] || [];
+  if (!cal.length) { $('#cal-heatmap-wrap').innerHTML = '<div style="padding:14px;color:var(--text-2);font-family:var(--mono);font-size:11px">No calendar data for ' + tk + '</div>'; return; }
+  const years = Array.from(new Set(cal.map(c => c.year))).sort();
+  const byYM = {}; cal.forEach(c => { byYM[`${c.year}-${c.month}`] = c; });
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let html = '<div style="padding:10px;overflow-x:auto"><table class="cal-table"><thead><tr><th></th>' + months.map(m => `<th>${m}</th>`).join('') + '<th>YTD</th></tr></thead><tbody>';
+  years.forEach(y => {
+    let ytd = 0;
+    html += `<tr><td class="yrlabel">${y}</td>`;
+    for (let m = 1; m <= 12; m++) {
+      const c = byYM[`${y}-${m}`];
+      if (!c) { html += `<td class="cal-cell" style="background:#f7f7f7;color:#d0d4da">–</td>`; }
+      else { ytd += c.excess_bp; html += `<td class="cal-cell" style="background:${excessColor(c.excess_bp)}" title="Fund ${c.fund_ret_pct}% vs SGOV ${c.sgov_ret_pct}% → excess ${c.excess_bp}bp">${c.excess_bp >= 0 ? '+' : ''}${c.excess_bp.toFixed(0)}</td>`; }
+    }
+    html += `<td class="cal-cell" style="background:${excessColor(ytd)};font-weight:700"><b>${ytd >= 0 ? '+' : ''}${ytd.toFixed(0)}</b></td></tr>`;
+  });
+  html += '</tbody></table></div>';
+  $('#cal-heatmap-wrap').innerHTML = html;
+}
+
+function renderDDTable(data, tickers) {
+  const rows = tickers.filter(tk => data.nav_stats[tk]).map(tk => {
+    const ns = data.nav_stats[tk]; const m = data.meta[tk];
+    return { ticker: tk, family: (m.family||'').replace('Franklin Templeton','FT'), max_dd: ns.max_drawdown_pct, peak: ns.peak_date, trough: ns.trough_date, rec: ns.recovery_days, vol: ns.ann_vol_pct, ret: ns.ann_return_pct };
+  });
+  STATE.ddRows = rows; STATE.ddSort = {key:'max_dd', desc:false};
+  renderDDTableSorted();
+  $$('#tbl-dd thead th').forEach(th => th.addEventListener('click', () => {
+    const key = th.dataset.sort;
+    STATE.ddSort = { key, desc: STATE.ddSort.key === key ? !STATE.ddSort.desc : false };
+    renderDDTableSorted();
+  }));
+}
+
+function renderDDTableSorted() {
+  const {key, desc} = STATE.ddSort;
+  const rows = [...STATE.ddRows].sort((a,b) => {
+    const va=a[key], vb=b[key];
+    if (va==null && vb==null) return 0;
+    if (va==null) return 1; if (vb==null) return -1;
+    const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
+    return desc ? -cmp : cmp;
+  });
+  $('#tbl-dd tbody').innerHTML = rows.map(r => `<tr>
+    <td class="ticker-cell">${r.ticker}</td><td class="family-cell">${r.family}</td>
+    <td class="num" style="color:${r.max_dd < -5 ? 'var(--red)' : (r.max_dd < -2 ? 'var(--amber)' : 'var(--text-1)')}">${fmtPct(r.max_dd, 2)}</td>
+    <td>${r.peak || ''}</td><td>${r.trough || ''}</td>
+    <td class="num">${r.rec ?? '–'}</td>
+    <td class="num">${fmtPct(r.vol, 2)}</td>
+    <td class="num">${fmtPct(r.ret, 2)}</td>
+  </tr>`).join('');
+  $$('#tbl-dd thead th').forEach(th => { th.classList.remove('sorted-asc','sorted-desc'); if (th.dataset.sort === key) th.classList.add(desc ? 'sorted-desc' : 'sorted-asc'); });
+}
+
+function renderRiskRet(data, tickers) {
+  const palette = ['#005f9e','#00aea9','#b42573','#e2a252','#6b5fac','#d91943','#008eaa','#00294b','#a73f8a','#0057b8','#e8846e','#50b8c8','#9b93d0','#c94e4a','#e8c07a','#597891','#22746b','#81427d','#558d3d'];
+  const points = tickers.filter(tk => data.nav_stats[tk]).map((tk, i) => {
+    const ns = data.nav_stats[tk]; const m = data.meta[tk];
+    return { x: ns.ann_vol_pct, y: ns.ann_return_pct, tk, family: m.family, aum: m.aum, r: Math.max(4, Math.min(16, Math.sqrt((m.aum||1)/1e9))), color: palette[i % palette.length] };
+  });
+  new Chart($('#chart-riskret').getContext('2d'), {
+    type: 'bubble',
+    data: { datasets: points.map(p => ({ label: p.tk, data: [{x:p.x, y:p.y, r:p.r}], backgroundColor: p.color + '99', borderColor: p.color, borderWidth: 1.5 })) },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => { const p = points[c.datasetIndex]; return `${p.tk} (${p.family}): vol ${p.x.toFixed(2)}%, ret ${p.y.toFixed(2)}%, AUM ${fmtBn(p.aum)}`; }}}},
+      scales: {
+        x: { grid: {color:'#e2e6ec'}, ticks: {font:{family:'JetBrains Mono',size:10},color:'#596577',callback: v => v + '%'}, title: {display:true,text:'Annualized volatility (full history)',color:'#596577',font:{family:'JetBrains Mono',size:10}}},
+        y: { grid: {color:'#e2e6ec'}, ticks: {font:{family:'JetBrains Mono',size:10},color:'#596577',callback: v => v + '%'}, title: {display:true,text:'Annualized return',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
+      }
+    }
+  });
+}
+
+function renderYieldDecomp(data, tickers) {
+  const sorted = [...tickers].filter(tk => data.yield_decomp[tk] && data.yield_decomp[tk].sec_yield > 0).sort((a,b) => data.yield_decomp[b].sec_yield - data.yield_decomp[a].sec_yield);
+  $('#decomp-inputs').textContent = `Term slope ${data.term_slope_pct?.toFixed(2)}%/yr · IG OAS ${data.oas?.ig}% · HY OAS ${data.oas?.hy}% · ER subtracted`;
+  new Chart($('#chart-decomp').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: sorted,
+      datasets: [
+        {label:'T-bill baseline', data: sorted.map(tk => data.yield_decomp[tk].baseline), backgroundColor:'#005f9e', stack:'y'},
+        {label:'Rate carry', data: sorted.map(tk => data.yield_decomp[tk].rate_carry), backgroundColor:'#00aea9', stack:'y'},
+        {label:'Credit spread', data: sorted.map(tk => data.yield_decomp[tk].credit_carry), backgroundColor:'#e2a252', stack:'y'},
+        {label:'Structure spread', data: sorted.map(tk => data.yield_decomp[tk].structure_carry), backgroundColor:'#6b5fac', stack:'y'},
+        {label:'Floater/MM', data: sorted.map(tk => data.yield_decomp[tk].floater_carry), backgroundColor:'#008eaa', stack:'y'},
+        {label:'Expense drag', data: sorted.map(tk => data.yield_decomp[tk].expense_drag || 0), backgroundColor:'#8896a7', stack:'y'},
+        {label:'Unexplained residual', data: sorted.map(tk => data.yield_decomp[tk].residual), backgroundColor: sorted.map(tk => data.yield_decomp[tk].residual >= 0 ? '#b42573' : '#d91943'), stack:'y'},
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: {mode:'index', intersect:false},
+      plugins: { legend: {position:'bottom', labels:{font:{family:'JetBrains Mono',size:10},color:'#596577',boxWidth:12}}, tooltip:{ callbacks:{ footer: items => { const tk = items[0].label; return `SEC yield actual: ${data.yield_decomp[tk].sec_yield}% · ER: ${data.meta[tk].expense_ratio_pct || 0}%`; }}}},
+      scales: {
+        x: { stacked:true, grid:{display:false}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577'}},
+        y: { stacked:true, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback: v => v.toFixed(1) + '%'}, title:{display:true,text:'SEC yield attribution (%)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
+      }
+    }
+  });
+}
+
+function renderNetYieldTable(data, tickers) {
+  const rows = tickers.map(tk => {
+    const m = data.meta[tk]; const yd = data.yield_decomp[tk];
+    const netYPD = (m.net_yield != null && m.duration > 0.05) ? (m.net_yield / m.duration) : null;
+    return { tk, fam: (m.family||'').replace('Franklin Templeton','FT'), vehicle: m.vehicle || 'ETF', sec: m.sec_yield, er: m.expense_ratio_pct, net: m.net_yield, dur: m.duration, netYPD, res: yd ? yd.residual : null };
+  }).filter(r => r.sec != null).sort((a,b) => (b.net ?? -99) - (a.net ?? -99));
+  $('#tbl-netyield tbody').innerHTML = rows.map(r => `<tr>
+    <td class="ticker-cell">${r.tk}</td><td class="family-cell">${r.fam}</td>
+    <td><span class="tile-badge ${r.vehicle==='ETF'?'vehicle-etf':'vehicle-mf'}">${r.vehicle}</span></td>
+    <td class="num">${fmtPct(r.sec, 2)}</td><td class="num">${fmtPct(r.er, 2)}</td>
+    <td class="num" style="font-weight:600;color:var(--accent)">${fmtPct(r.net, 2)}</td>
+    <td class="num">${r.dur?.toFixed(2) ?? '–'}y</td>
+    <td class="num">${r.netYPD?.toFixed(2) ?? '–'}</td>
+    <td class="num" style="color:${r.res >= 0 ? 'var(--accent2)' : 'var(--red)'}">${r.res >= 0 ? '+' : ''}${r.res?.toFixed(2) ?? '–'}%</td>
+  </tr>`).join('');
+}
+
+function renderBetaTable(data, tickers) {
+  const factors = ['SHY','LQD','HYG','BKLN','FLOT'];
+  const rows = tickers.filter(tk => data.factor_betas[tk]).map(tk => ({ tk, fam: (data.meta[tk].family||'').replace('Franklin Templeton','FT'), b: data.factor_betas[tk] }))
+    .sort((a,b) => b.b.r2 - a.b.r2);
+  $('#tbl-betas tbody').innerHTML = rows.map(r => `<tr>
+    <td class="ticker-cell">${r.tk}</td><td class="family-cell">${r.fam}</td>
+    ${factors.map(f => `<td class="num" style="color:${Math.abs(r.b['beta_'+f]) > 0.3 ? 'var(--accent)' : 'var(--text-1)'}">${r.b['beta_'+f]?.toFixed(2) ?? '–'}</td>`).join('')}
+    <td class="num" title="${r.b.r2 < 0.3 ? 'α suppressed — R² below 0.30 threshold, α is indistinguishable from noise' : ''}">${r.b.r2 >= 0.3 ? (r.b.alpha_annualized_pct?.toFixed(2) ?? '–') : '<span style="color:var(--text-2)">—</span>'}</td>
+    <td class="num" style="color:${r.b.r2 > 0.3 ? 'var(--text-0)' : 'var(--amber)'}">${r.b.r2?.toFixed(2)}</td>
+    <td class="num">${r.b.n_obs}</td>
+    <td style="font-size:10px">${r.b.window_start} → ${r.b.window_end}</td>
+  </tr>`).join('');
+}
+
+// ═══════════════ v3: POSITION MAP ═══════════════
+function renderPositionMap(data, tickers) {
+  const pts = tickers.filter(tk => data.meta[tk].duration != null && data.meta[tk].net_yield != null).map(tk => {
+    const m = data.meta[tk]; const r = data.risk[tk];
+    const dd = Math.abs(m.max_drawdown_pct || 1);
+    return {
+      x: m.duration,
+      y: m.net_yield,
+      r: Math.max(4, Math.min(22, 3 + Math.sqrt(dd) * 3)),
+      tk, credit: r.credit, vehicle: m.vehicle || 'ETF',
+      aum: m.aum, sec: m.sec_yield, er: m.expense_ratio_pct, dd: m.max_drawdown_pct,
+      color: riskColor(r.credit),
+    };
+  });
+  new Chart($('#chart-position').getContext('2d'), {
+    type: 'bubble',
+    data: { datasets: pts.map(p => ({
+      label: p.tk,
+      data: [{x: p.x, y: p.y, r: p.r}],
+      backgroundColor: p.color + 'cc',
+      borderColor: p.vehicle === 'ETF' ? '#00294b' : '#b42573',
+      borderWidth: p.vehicle === 'ETF' ? 1.2 : 2.0,
+    }))},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => {
+              const p = pts[c.datasetIndex];
+              return `${p.tk}: dur ${p.x.toFixed(2)}y · SEC ${p.sec?.toFixed(2)}% · ER ${p.er}% · net ${p.y.toFixed(2)}% · credit ${p.credit.toFixed(0)} · max DD ${p.dd?.toFixed(1)}% · ${p.vehicle}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback:v=>v+'y'},
+             title:{display:true,text:'Effective duration (years)',color:'#596577',font:{family:'JetBrains Mono',size:11}}},
+        y: { grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback:v=>v+'%'},
+             title:{display:true,text:'Net yield (SEC − ER)',color:'#596577',font:{family:'JetBrains Mono',size:11}}},
+      }
+    },
+    plugins: [{
+      id: 'posLabels',
+      afterDatasetsDraw(chart) {
+        if (chart.canvas.id !== 'chart-position') return;
+        const ctx = chart.ctx;
+        chart.data.datasets.forEach((ds, i) => {
+          const meta = chart.getDatasetMeta(i);
+          if (!meta.data.length) return;
+          const pt = meta.data[0];
+          ctx.save();
+          ctx.font = '10px JetBrains Mono';
+          ctx.fillStyle = '#2d3748';
+          ctx.textAlign = 'center';
+          ctx.fillText(ds.label, pt.x, pt.y - pt.options.radius - 4);
+          ctx.restore();
+        });
+      }
+    }]
+  });
+}
+
+// ═══════════════ v3: STRESS CALIBRATION SCATTER ═══════════════
+function renderStressCalibration(data, tickers) {
+  // Pair each fund's model worst-case PnL (most-negative across 8 scenarios)
+  // with realized worst-case PnL (most-negative across 5 factor shocks + composite)
+  const pts = tickers.filter(tk => data.realized_stress[tk]).map(tk => {
+    const modelKeys = ['rate_up_100','ig_widen_50','hy_blow_300','struct_stress','mm_crisis','curve_steep'];
+    const modelWorst = Math.min(...modelKeys.map(k => data.stress[tk][k].pnl));
+    const rs = data.realized_stress[tk];
+    const realizedKeys = ['shock_shy_pnl','shock_lqd_pnl','shock_hyg_pnl','shock_bkln_pnl','shock_flot_pnl','shock_composite_pnl'];
+    const realizedWorst = Math.min(...realizedKeys.map(k => rs[k] || 0));
+    const gap = realizedWorst - modelWorst;  // negative = model too optimistic
+    const m = data.meta[tk];
+    return {
+      x: modelWorst, y: realizedWorst, tk, gap,
+      r: 6 + Math.min(10, Math.abs(gap) * 2),
+      color: Math.abs(gap) > 1 ? '#d91943' : (Math.abs(gap) > 0.5 ? '#e2a252' : '#00aea9'),
+      family: m.family, r2: rs.r2,
+    };
+  });
+  const minVal = Math.min(...pts.map(p => Math.min(p.x, p.y)), -1) - 0.5;
+  const maxVal = Math.max(...pts.map(p => Math.max(p.x, p.y)), 1) + 0.5;
+
+  new Chart($('#chart-stress-calib').getContext('2d'), {
+    type: 'bubble',
+    data: {
+      datasets: [
+        ...pts.map(p => ({
+          label: p.tk,
+          data: [{x: p.x, y: p.y, r: p.r}],
+          backgroundColor: p.color + 'aa',
+          borderColor: p.color,
+          borderWidth: 1.5,
+        })),
+        {
+          label: '45° calibration line',
+          type: 'line',
+          data: [{x: minVal, y: minVal}, {x: maxVal, y: maxVal}],
+          borderColor: '#8896a7',
+          borderWidth: 1,
+          borderDash: [4, 4],
+          pointRadius: 0,
+          fill: false,
+          showLine: true,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: ctx => ctx.dataset.label !== '45° calibration line',
+          callbacks: {
+            label: c => {
+              const p = pts[c.datasetIndex]; if (!p) return '';
+              return `${p.tk} (${p.family}): model ${p.x.toFixed(2)}% vs realized ${p.y.toFixed(2)}% · gap ${p.gap.toFixed(2)}% · R² ${p.r2?.toFixed(2)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback:v=>v+'%'},
+             title:{display:true,text:'Model worst-case PnL (%)',color:'#596577',font:{family:'JetBrains Mono',size:11}},
+             min: minVal, max: maxVal},
+        y: { grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577',callback:v=>v+'%'},
+             title:{display:true,text:'Realized worst-case PnL — factor β × historical shock (%)',color:'#596577',font:{family:'JetBrains Mono',size:11}},
+             min: minVal, max: maxVal},
+      }
+    },
+    plugins: [{
+      id: 'calibLabels',
+      afterDatasetsDraw(chart) {
+        if (chart.canvas.id !== 'chart-stress-calib') return;
+        const ctx = chart.ctx;
+        chart.data.datasets.forEach((ds, i) => {
+          if (ds.label === '45° calibration line') return;
+          const meta = chart.getDatasetMeta(i);
+          if (!meta.data.length) return;
+          const pt = meta.data[0];
+          ctx.save();
+          ctx.font = '10px JetBrains Mono';
+          ctx.fillStyle = '#2d3748';
+          ctx.textAlign = 'center';
+          ctx.fillText(ds.label, pt.x, pt.y - pt.options.radius - 4);
+          ctx.restore();
+        });
+      }
+    }]
+  });
+}
+
+// ═══════════════ v3: DRILL-DOWN — NAV + factor overlay ═══════════════
+function renderDrillPicker(data, tickers) {
+  const avail = tickers.filter(tk => (data.nav_ext[tk] || []).length > 10);
+  const sel = $('#drill-fund-select');
+  sel.innerHTML = avail.map(tk => `<option value="${tk}">${tk} — ${data.meta[tk].name || ''}</option>`).join('');
+  if (!avail.includes(STATE.drillFund)) STATE.drillFund = avail[0];
+  sel.value = STATE.drillFund;
+  sel.addEventListener('change', (e) => { STATE.drillFund = e.target.value; drawDrill(data); syncURL(); });
+  drawDrill(data);
+}
+
+function drawDrill(data) {
+  const tk = STATE.drillFund;
+  const fundNav = (data.nav_ext[tk] || []);
+  if (!fundNav.length) return;
+  const startDate = fundNav[0].d;
+  const fundStartPrice = fundNav[0].p;
+
+  // Build datasets rebased to 100 at fund inception
+  const factorPalette = {SHY:'#005f9e', LQD:'#6b5fac', HYG:'#d91943', BKLN:'#8a1235', FLOT:'#008eaa'};
+  const datasets = [{
+    label: tk,
+    data: fundNav.map(p => ({x: p.d, y: p.p / fundStartPrice * 100})),
+    borderColor: '#b42573',
+    borderWidth: 2.5,
+    pointRadius: 0, tension: 0, fill: false,
+  }];
+  ['SHY','LQD','HYG','BKLN','FLOT'].forEach(ftk => {
+    const fnav = (data.factor_nav || {})[ftk] || [];
+    if (!fnav.length) return;
+    // Filter to dates >= fund start, rebase
+    const fromStart = fnav.filter(p => p.d >= startDate);
+    if (!fromStart.length) return;
+    const rebaseAnchor = fromStart[0].p;
+    datasets.push({
+      label: ftk,
+      data: fromStart.map(p => ({x: p.d, y: p.p / rebaseAnchor * 100})),
+      borderColor: factorPalette[ftk],
+      borderWidth: 1.4,
+      borderDash: [5, 4],
+      pointRadius: 0, tension: 0, fill: false,
+    });
+  });
+
+  // Destroy existing chart if any
+  if (window._drillChart) window._drillChart.destroy();
+  window._drillChart = new Chart($('#chart-drill-nav').getContext('2d'), {
+    type: 'line',
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: {font:{family:'JetBrains Mono',size:10},color:'#596577',boxWidth:14,padding:6}},
+        tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(1)} (idx 100 at ${startDate})` } }
+      },
+      scales: {
+        x: { type:'time', time:{unit:'year'}, grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577'}},
+        y: { grid:{color:'#e2e6ec'}, ticks:{font:{family:'JetBrains Mono',size:10},color:'#596577'},
+             title:{display:true,text:'Normalized NAV (100 at fund inception)',color:'#596577',font:{family:'JetBrains Mono',size:10}}}
+      }
+    }
+  });
+
+  // Beta box
+  const b = data.factor_betas[tk];
+  const rs = data.realized_stress[tk];
+  const m = data.meta[tk];
+  const box = $('#drill-beta-box');
+  // FLBL-specific reconciliation callout — three conflicting stress numbers
+  let flblNote = '';
+  if (tk === 'FLBL') {
+    const hist = data.nav_stats.FLBL?.max_drawdown_pct?.toFixed(2);
+    const realComp = rs?.shock_composite_pnl?.toFixed(2);
+    const model = data.stress.FLBL?.hy_blow_300?.pnl?.toFixed(2);
+    flblNote = `<div class="callout warn" style="margin:10px 14px 0">
+      <b>FLBL — the three stress numbers reconciled.</b><br>
+      Historical max DD = <b>${hist}%</b> (realized, 2020-03-23 COVID-MM).<br>
+      Factor-composite realized = <b>${realComp}%</b> (β × historical 5th-pctl monthly shocks; window 2018-04→2026-04 excludes 2008/2020-Mar tail).<br>
+      Model <code>hy_blow_300</code> = <b>${model}%</b> (broken — dur × shock doesn't capture bank-loan default/recovery dynamics; use realized).<br>
+      <b>For competing-fund design, anchor on historical DD, not model stress.</b>
+    </div>`;
+  }
+
+  if (b) {
+    const dominantFactor = ['SHY','LQD','HYG','BKLN','FLOT'].reduce((best, f) => Math.abs(b['beta_' + f]) > Math.abs(b['beta_' + best]) ? f : best, 'SHY');
+    box.innerHTML = flblNote + `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px">
+        <div><b style="color:var(--navy)">${tk}</b> <span class="tile-badge ${m.vehicle==='ETF'?'vehicle-etf':'vehicle-mf'}">${m.vehicle}</span></div>
+        <div style="text-align:right;color:var(--text-2)">${b.window_start} → ${b.window_end} · ${b.n_obs} obs</div>
+        <div>SEC yield: <b>${fmtPct(m.sec_yield,2)}</b> · ER: <b>${fmtPct(m.expense_ratio_pct,2)}</b> · Net: <b>${fmtPct(m.net_yield,2)}</b></div>
+        <div style="text-align:right">Duration: <b>${m.duration?.toFixed(2)}y</b> · Max DD: <b style="color:${m.max_drawdown_pct<-3?'var(--red)':'var(--text-0)'}">${fmtPct(m.max_drawdown_pct,1)}</b></div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+        <div>β<sub>SHY</sub>: <b>${b.beta_SHY?.toFixed(2)}</b></div>
+        <div>β<sub>LQD</sub>: <b>${b.beta_LQD?.toFixed(2)}</b></div>
+        <div>β<sub>HYG</sub>: <b>${b.beta_HYG?.toFixed(2)}</b></div>
+        <div>β<sub>BKLN</sub>: <b>${b.beta_BKLN?.toFixed(2)}</b></div>
+        <div>β<sub>FLOT</sub>: <b>${b.beta_FLOT?.toFixed(2)}</b></div>
+        <div>R²: <b style="color:${b.r2>0.3?'var(--text-0)':'var(--amber)'}">${b.r2?.toFixed(2)}</b></div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
+      <div style="color:var(--text-1);font-size:11px">
+        <b>Dominant factor:</b> ${dominantFactor} (β = ${b['beta_' + dominantFactor]?.toFixed(2)}).
+        <b>Realized worst-case:</b> ${rs ? rs.shock_composite_pnl?.toFixed(2) + '%' : '–'} (all-factor composite shock).
+        <b>α:</b> ${b.alpha_annualized_pct?.toFixed(2)}%/yr ${b.alpha_annualized_pct>0?'above':'below'} a passive 5-factor replica.
+      </div>
+    `;
+  } else {
+    box.innerHTML = `<div style="color:var(--text-2)">No regression data for ${tk}</div>`;
+  }
+
+  // Calendar heatmap for drill fund (reuse excessColor + structure)
+  const cal = data.calendar_rel[tk] || [];
+  if (!cal.length) {
+    $('#drill-cal-wrap').innerHTML = `<div style="padding:12px;color:var(--text-2)">No calendar data for ${tk}</div>`;
+    return;
+  }
+  const years = Array.from(new Set(cal.map(c => c.year))).sort();
+  const byYM = {}; cal.forEach(c => byYM[`${c.year}-${c.month}`] = c);
+  const months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+  let html = '<div style="padding:10px;overflow-x:auto"><table class="cal-table"><thead><tr><th></th>' + months.map(m => `<th>${m}</th>`).join('') + '</tr></thead><tbody>';
+  years.forEach(y => {
+    html += `<tr><td class="yrlabel">${y}</td>`;
+    for (let m = 1; m <= 12; m++) {
+      const c = byYM[`${y}-${m}`];
+      if (!c) html += `<td class="cal-cell" style="background:#f7f7f7;color:#d0d4da">–</td>`;
+      else html += `<td class="cal-cell" style="background:${excessColor(c.excess_bp)}" title="${y}-${m}: fund ${c.fund_ret_pct}% vs SGOV ${c.sgov_ret_pct}% → ${c.excess_bp}bp">${c.excess_bp >= 0 ? '+' : ''}${c.excess_bp.toFixed(0)}</td>`;
+    }
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  $('#drill-cal-wrap').innerHTML = html;
+}
+
+// ═══════════════ v4: HELP POPOVERS ═══════════════
+const HELP_CONTENT = {
+  'matrix-overview': {
+    h: 'How to read the Risk Matrix',
+    b: `Rows = fund, columns = risk axis. Each cell shows a <b>0–100 score</b> on top (how much of that risk the fund takes, relative to the universe) with the <b>raw metric</b> in small text below (duration in years, weight %, etc.). Cells are colored green→red from low to severe.<br><br>A competitor-fund PM reads across a row to see the fund's <i>risk signature</i>, and down a column to see which funds are most exposed to that specific risk.`,
+  },
+  'axis-rate': {
+    h: 'Rate risk',
+    b: `<b>Score</b> = rank-normalized effective duration within this universe: <code>100 × (dur − min) / (max − min)</code>. Score 0 = shortest fund, 100 = longest.<br><br><b>Why:</b> duration × 1% = approximate %-loss for a +100bp parallel rate shock. For this 19-fund universe, actual duration range is ~0.1y → 2.7y — so a raw-duration score would cluster in 2–67; rank-normalizing spreads them across the full gradient.`,
+    eg: 'e.g. IGSB (dur 2.69y) = 100. SGOV (0.10y) = 0.',
+  },
+  'axis-credit': {
+    h: 'Credit risk',
+    b: `<b>Score</b> = weighted rating-risk score using: AAA=0, AA=5, A=15, BBB=35, BB=65, B=85, &lt;B=95, NR=10.<br><br><b>Fallback:</b> when rating_weights are all-NR (PIMCO N-PORT doesn't pre-aggregate ratings), score is computed from the sector mix: Corp IG→35, HY→80, Structured→25, Treasury→0.`,
+    eg: 'FLBL score 70 (94% HY sector + BB/B rating inferred); SGOV score 0 (100% Treasury).',
+  },
+  'axis-liquidity': {
+    h: 'Liquidity risk (Basel III LCR HQLA)',
+    b: `<b>Score</b> = 100 − HQLA-weighted portfolio, where each sector is discounted by its Basel III LCR haircut:<br><br><code>Treasury</code> 0% (L1) · <code>Agency MBS</code> 5% (L1 extended US) · <code>Muni</code> 20% · <code>Short-Term CP/CD</code> 25% · <code>Corp IG</code> 25% (rating-refined to 15-50% where rating data exists: AAA/AA=15%, A=25%, BBB=50%) · <code>Structured Credit</code> 60% (short AAA ABS/CLO are non-HQLA but still marketable) · <code>Corp HY</code> 100% (non-HQLA, bid disappears in stress).<br><br>High score = bid-ask widens sharply in stress or redemption wave.`,
+    eg: 'SGOV 0 (all L1). MINT 34 (60% IG + 35% ABS). LDUR 27 (mix). FLBL 94 (94% HY).',
+  },
+  'axis-conc': {
+    h: 'Issuer concentration',
+    b: `<b>Score</b> = 2 × (top-10 holdings' total weight, <i>excluding</i> direct Treasury positions).<br><br><b>Why exclude Treasury:</b> SGOV holding 73% top-10 is not a concentration risk — they're different T-bill maturities, all U.S. Government. Without exclusion, passive Treasury funds score as "maxed out" concentration which is the opposite of the truth.`,
+    eg: 'LDUR top-10 = 28% non-Treasury → score ~56.',
+  },
+  'axis-mbs': {
+    h: 'Agency MBS',
+    b: `<b>Score</b> = 1.2 × weight in Agency MBS (Fannie, Freddie, Ginnie).<br><br><b>Credit-wise AAA</b> (govt guarantee), but: (a) <i>negative convexity</i> — prepays accelerate when rates fall (you don't participate in the upside), (b) illiquid in MM-freeze (Mar 2020 mortgage-dealer pullback). A separate axis from ABS/CLO because the risk profile is genuinely different.`,
+    eg: 'FISAX 68% → score 81.',
+  },
+  'axis-abs': {
+    h: 'ABS / CLO',
+    b: `<b>Score</b> = 1.8 × weight in Structured Credit (asset-backed securities, collateralized loan obligations).<br><br><b>Why multiplied by 1.8:</b> even AAA ABS/CLO carry <i>spread risk</i> and <i>liquidity risk</i> far above Treasuries. The universe's active ultra-short funds (MINT, ICSH, NEAR) earn most of their spread premium here — a competing fund has to decide whether to take that risk too.`,
+    eg: 'LDUR 25% → score 45. SGOV 0% → score 0.',
+  },
+  'axis-hy': {
+    h: 'Sub-IG exposure',
+    b: `<b>Score</b> = sub-investment-grade weight capped at 100, using <code>max(sector Corporate HY, rating BB + B + &lt;B)</code>. Takes the higher of the two signals to avoid double-counting.<br><br><b>Why it matters:</b> any fund &gt;10% sub-IG is a fundamentally different risk product than a cash-like fund. Competitor positioning depends on whether you want to compete in the "better than cash" space or the "juicier yield" space.`,
+    eg: 'FLBL 94% sub-IG (all senior loans are BB/B).',
+  },
+  'exposure-overview': {
+    h: 'Exposure similarity — what it measures',
+    b: `Each cell = <b>cosine similarity</b> between two funds' weight vectors. Cosine of 1.0 = identical composition, 0.0 = orthogonal. <br><br>This captures <b>economic overlap</b> beyond what CUSIP matching reveals. Two funds can hold entirely different bonds and still be near-perfect substitutes if their sector/rating/maturity profiles match.<br><br><b>Five views:</b> by Sector weight (9-dim), Rating mix (8-dim), Maturity bucket (7-dim), Factor β (5-dim from SHY/LQD/HYG/BKLN/FLOT regressions), or Combined (concatenated and normalized).`,
+    eg: 'MINT vs SLQD combined = 0.87 (both short IG). FLBL vs MINT = 0.05 (different products entirely).',
+  },
+};
+
+function positionPopover(btn, pop) {
+  const r = btn.getBoundingClientRect();
+  pop.style.top = (r.bottom + window.scrollY + 10) + 'px';
+  pop.style.left = Math.max(12, r.left + window.scrollX - 20) + 'px';
+  // Ensure not off-screen right
+  const popR = pop.getBoundingClientRect();
+  if (popR.right > window.innerWidth - 12) {
+    pop.style.left = (window.innerWidth - popR.width - 12) + 'px';
+  }
+}
+
+function closeAllPopovers() { document.querySelectorAll('.popover').forEach(p => p.remove()); }
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.help-btn');
+  if (!btn) { closeAllPopovers(); return; }
+  closeAllPopovers();
+  const key = btn.dataset.help;
+  const c = HELP_CONTENT[key];
+  if (!c) return;
+  const pop = document.createElement('div');
+  pop.className = 'popover';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-live', 'polite');
+  pop.innerHTML = `<h4>${c.h}</h4><div>${c.b}</div>${c.eg ? `<div class="eg">${c.eg}</div>` : ''}`;
+  document.body.appendChild(pop);
+  positionPopover(btn, pop);
+  e.stopPropagation();
+});
+// Esc dismisses popovers
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllPopovers(); });
+
+// ═══════════════ v4.1: EXPOSURE SIMILARITY — rank-normalized coloring ═══════════════
+let EXPO_VIEW = 'sector';
+function renderExposureMatrix(data, tickers) {
+  const es = (data.exposure_sim || {})[EXPO_VIEW];
+  if (!es) { $('#exposure-matrix').innerHTML = '<div style="color:var(--text-1);padding:12px">No exposure data for view: ' + EXPO_VIEW + '</div>'; return; }
+  const anchor = tickers.includes('MINT') ? 'MINT' : tickers[0];
+  const sorted = [...tickers].sort((a, b) => (es[b]?.[anchor] ?? 0) - (es[a]?.[anchor] ?? 0));
+
+  // v4.1 fix: rank-normalize off-diagonal cells WITHIN the current view so color
+  // uses the full palette regardless of absolute similarity range (rating view
+  // saturates near 1.0 due to all-NR funds; sector view spreads 0-0.9).
+  const allCells = [];
+  sorted.forEach(ra => sorted.forEach(rb => {
+    if (ra !== rb) allCells.push(es[ra]?.[rb] ?? 0);
+  }));
+  const sortedVals = [...allCells].sort((a, b) => a - b);
+  function pctile(v) {
+    if (sortedVals.length === 0) return 0;
+    let lo = 0, hi = sortedVals.length;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (sortedVals[mid] < v) lo = mid + 1; else hi = mid; }
+    return lo / Math.max(1, sortedVals.length - 1);
+  }
+
+  // Warning banner for rating view — 18/19 funds have all-NR rating vectors,
+  // so cosine collapses to 1.0 artifact-of-missing-data, not true similarity.
+  const warn = (EXPO_VIEW === 'rating')
+    ? `<div class="rating-warn"><b>Warning — rating data is missing for 18/19 funds.</b> PIMCO N-PORT and iShares CSVs don't pre-aggregate rating buckets (arrives as all-NR). Only FLBL has an inferred rating mix. Values on this view are mostly artifacts of missing data; use Sector or Combined for substitutability.</div>`
+    : '';
+
+  let html = warn + '<table class="exposure-matrix"><thead><tr><th></th>';
+  sorted.forEach(tk => html += `<th scope="col" title="${tk}">${tk}</th>`);
+  html += '</tr></thead><tbody>';
+  sorted.forEach(ra => {
+    html += `<tr><td class="tk-label" scope="row">${ra}</td>`;
+    sorted.forEach(rb => {
+      if (ra === rb) html += `<td class="self" aria-label="self">–</td>`;
+      else {
+        const s = es[ra]?.[rb] ?? 0;
+        const p = pctile(s);  // v4.1: rank-normalize color
+        html += `<td style="background:${simColor(p)};color:${p>0.7?'#2d3748':'var(--text-1)'}" title="${ra} × ${rb} = ${s.toFixed(2)} (pct ${(p*100).toFixed(0)})">${s.toFixed(2)}</td>`;
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  $('#exposure-matrix').innerHTML = html;
+}
+
+function simColor(p) {
+  // Accepts a 0-1 percentile; returns white→raspberry
+  const t = Math.max(0, Math.min(1, p));
+  const r = Math.round(247 - t * 67);
+  const g = Math.round(247 - t * 210);
+  const b = Math.round(247 - t * 132);
+  return `rgb(${r},${g},${b})`;
+}
+
+$$('.pill-btn[data-expo]').forEach(b => b.addEventListener('click', () => {
+  EXPO_VIEW = b.dataset.expo;
+  $$('.pill-btn[data-expo]').forEach(x => x.classList.toggle('active', x.dataset.expo === EXPO_VIEW));
+  renderExposureMatrix(window.DATA, window.TICKERS);
+}));
+
+main();
+</script>
+</body>
+</html>
